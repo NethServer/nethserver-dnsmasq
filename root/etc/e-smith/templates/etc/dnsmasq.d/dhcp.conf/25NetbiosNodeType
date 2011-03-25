@@ -1,7 +1,8 @@
 {
+    $OUT.= "dhcp-option=47    # empty netbios scope\n";
     my $server_role = $smb{ServerRole} || 'WS';
 
     return "" unless $server_role =~ m{^(PDC|ADS)$};
 
-    return "    option netbios-node-type    8;";
+    $OUT.= "dhcp-option=46,8    # netbios node type\n";
 }

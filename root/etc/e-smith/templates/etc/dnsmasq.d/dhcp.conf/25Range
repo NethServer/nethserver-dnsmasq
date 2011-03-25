@@ -1,3 +1,4 @@
 {
-    $OUT .= "    range    $startDynamicIPRange $endDynamicIPRange;";
+    my $lease = $dhcpd{LeaseTime} || "86400";
+    $OUT .= "dhcp-range=$startDynamicIPRange,$endDynamicIPRange,$lease";
 }
