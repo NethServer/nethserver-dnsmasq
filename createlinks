@@ -1,0 +1,46 @@
+#!/usr/bin/perl -w
+
+use esmith::Build::CreateLinks  qw(:all);
+
+
+#--------------------------------------------------
+# actions for bootstrap-console-save event
+#--------------------------------------------------
+$event = "bootstrap-console-save";
+
+
+templates2events("/etc/dnsmasq.conf", $event);
+templates2events("/etc/dnsmasq.d/dhcp.conf", $event);
+templates2events("/etc/dnsmasq.d/dns.conf", $event);
+templates2events("/etc/resolv.conf", $event);
+
+#--------------------------------------------------
+# actions for remoteaccess-update event
+#--------------------------------------------------
+
+$event = "remoteaccess-update";
+
+safe_symlink("restart", "root/etc/e-smith/events/$event/services2adjust/dnsmasq");
+
+my %service2order =
+(
+    dnsmasq    	=> "65",
+);
+
+foreach my $service (keys %service2order)
+{
+    service_link_enhanced($service, $service2order{$service}, 7);
+}
+
+%service2order =
+(
+    dhcpd       => "K35",
+);
+
+foreach my $service (keys %service2order)
+{
+    service_link_enhanced($service, $service2order{$service}, 0);
+    service_link_enhanced($service, $service2order{$service}, 6);
+    service_link_enhanced($service, $service2order{$service}, 1);
+}
+
