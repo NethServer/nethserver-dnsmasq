@@ -1,0 +1,21 @@
+# If you want dnsmasq to listen for DHCP and DNS requests only on
+# specified interfaces (and the loopback) give the name of the
+# interface (eg eth0) here.
+# Repeat the line for more than one interface.
+{
+   $OUT.="interface=".$InternalInterface{Name}."\n";
+}
+
+# Set the domain for dnsmasq. this is optional, but if it is set, it
+# does the following things.
+# 1) Allows DHCP hosts to have fully qualified domain names, as long
+#     as the domain part matches this setting.
+# 2) Sets the "domain" DHCP option thereby potentially setting the
+#    domain of all systems configured by DHCP
+# 3) Provides the domain part for "expand-hosts" 
+{
+   $OUT.="domain=".$DomainName."\n";
+}
+
+# Include a another lot of configuration options.
+conf-dir=/etc/dnsmasq.d
