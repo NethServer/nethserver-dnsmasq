@@ -1,11 +1,12 @@
 {
     my $dnsache = $DB->get('dnscache') or return;
 
-    if (my $forwarder = $DB->get_prop_and_delete('dnsache', 'Forwarder')) {
-        $dnscache->merge_props('Forwarder', $forwarder);
+    if (my $forwarder = $DB->get_prop_and_delete('dnscache', 'Forwarder')) {
+        $DB->set_prop('dnsmasq','Forwarder', $forwarder);
     }
 
-    if (my $forwarder2 = $DB->get_prop_and_delete('dnsache', 'Forwarder2')) {
-        $dnscache->merge_props('Forwarder2', $forwarder2);
+    if (my $forwarder2 = $DB->get_prop_and_delete('dnscache', 'Forwarder2')) {
+        $DB->set_prop('dnsmasq','Forwarder2', $forwarder2);
     }
 }
+
