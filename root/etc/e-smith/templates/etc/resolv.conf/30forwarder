@@ -1,4 +1,4 @@
 {
-    $OUT .= "nameserver ".$dnscache{Forwarder}."\n" unless ($dnscache{Forwarder} eq '');
-    $OUT .= "nameserver ".$dnscache{Forwarder2}."\n" unless ($dnscache{Forwarder2} eq '');
+    $OUT .= "nameserver ".$dnsmasq{Forwarder}."\n" unless ($dnsmasq{Forwarder} eq '');
+    $OUT .= "nameserver ".$dnsmasq{Forwarder2}."\n" unless ($dnsmasq{Forwarder2} eq '');
 }
