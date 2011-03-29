@@ -8,7 +8,6 @@ use esmith::Build::CreateLinks  qw(:all);
 #--------------------------------------------------
 $event = "bootstrap-console-save";
 
-
 templates2events("/etc/dnsmasq.conf", $event);
 templates2events("/etc/dnsmasq.d/dhcp.conf", $event);
 templates2events("/etc/dnsmasq.d/dns.conf", $event);
@@ -22,6 +21,37 @@ $event = "remoteaccess-update";
 
 safe_symlink("restart", "root/etc/e-smith/events/$event/services2adjust/dnsmasq");
 
+#--------------------------------------------------
+# actions for update event
+# --------------------------------------------------
+
+$event = "nethserver-dnsmasq-update";
+
+safe_symlink("restart", "root/etc/e-smith/events/$event/services2adjust/dnsmasq");
+templates2events("/etc/dnsmasq.conf", $event);
+templates2events("/etc/dnsmasq.d/dhcp.conf", $event);
+templates2events("/etc/dnsmasq.d/dns.conf", $event);
+templates2events("/etc/resolv.conf", $event);
+
+
+#--------------------------------------------------
+# actions for save event
+# --------------------------------------------------
+
+$event = "nethserver-dnsmasq-save";
+
+safe_symlink("reload", "root/etc/e-smith/events/$event/services2adjust/dnsmasq");
+templates2events("/etc/dnsmasq.conf", $event);
+templates2events("/etc/dnsmasq.d/dhcp.conf", $event);
+templates2events("/etc/dnsmasq.d/dns.conf", $event);
+templates2events("/etc/resolv.conf", $event);
+
+
+
+#------------------------------------------------
+# services
+#------------------------------------------------
+
 my %service2order =
 (
     dnsmasq    	=> "65",
@@ -34,7 +64,7 @@ foreach my $service (keys %service2order)
 
 %service2order =
 (
-    dhcpd       => "K35",
+    dnsmasq       => "K35",
 );
 
 foreach my $service (keys %service2order)
@@ -43,4 +73,6 @@ foreach my $service (keys %service2order)
     service_link_enhanced($service, $service2order{$service}, 6);
     service_link_enhanced($service, $service2order{$service}, 1);
 }
+
+
 
