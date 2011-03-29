@@ -1,4 +1,5 @@
 {
+    return "" unless ($dhcpd{status} eq 'enabled');
     return "" unless $DHCP_WINSServer;
 
     $OUT .= "dhcp-option=44,$DHCP_WINSServer     # set netbios-over-TCP/IP nameserver(s) aka WINS server(s)\n";

@@ -1,1 +1,5 @@
-dhcp-authoritative
+{
+    return "" unless ($dhcpd{status} eq 'enabled');
+    
+    $OUT .= "dhcp-authoritative\n";
+}

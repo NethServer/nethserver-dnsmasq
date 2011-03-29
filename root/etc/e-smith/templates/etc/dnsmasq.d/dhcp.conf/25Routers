@@ -1,4 +1,6 @@
 { 
+    return "" unless ($dhcpd{status} eq 'enabled');
+
     my $router = (defined $SystemMode && $SystemMode =~ /servergateway/)
 	? $LocalIP :
 	    defined $GatewayIP ? $GatewayIP : undef;
