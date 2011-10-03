@@ -1,5 +1,5 @@
 {
-   //import configuration from base
+   #import configuration from base
    my $DNSForwarder = $DB->get_value("DNSForwarder") || 'undef';
    if ($DNSForwarder ne 'undef')
    {
@@ -8,7 +8,7 @@
    }
 
 
-   // migration from previous releases
+   # migration from previous releases
     my $dnsache = $DB->get('dnscache');
 
     if ($dnscache) { 
