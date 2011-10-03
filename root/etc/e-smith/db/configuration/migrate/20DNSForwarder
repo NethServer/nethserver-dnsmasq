@@ -1,12 +1,24 @@
 {
-    my $dnsache = $DB->get('dnscache') or return;
+   //import configuration from base
+   my $DNSForwarder = $DB->get_value("DNSForwarder") || 'undef';
+   if ($DNSForwarder ne 'undef')
+   {
+       $DB->set_prop('dnsmasq','Forwarder', $DNSForwarder);
+       $DB->delete('DNSForwarder'); 
+   }
 
-    if (my $forwarder = $DB->get_prop_and_delete('dnscache', 'Forwarder')) {
-        $DB->set_prop('dnsmasq','Forwarder', $forwarder);
-    }
 
-    if (my $forwarder2 = $DB->get_prop_and_delete('dnscache', 'Forwarder2')) {
-        $DB->set_prop('dnsmasq','Forwarder2', $forwarder2);
+   // migration from previous releases
+    my $dnsache = $DB->get('dnscache');
+
+    if ($dnscache) { 
+        if (my $forwarder = $DB->get_prop_and_delete('dnscache', 'Forwarder')) {
+            $DB->set_prop('dnsmasq','Forwarder', $forwarder);
+        }
+
+        if (my $forwarder2 = $DB->get_prop_and_delete('dnscache', 'Forwarder2')) {
+            $DB->set_prop('dnsmasq','Forwarder2', $forwarder2);
+        }
     }
 }
 
