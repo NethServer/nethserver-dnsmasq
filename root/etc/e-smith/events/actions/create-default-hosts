@@ -1,0 +1,69 @@
+#!/usr/bin/perl -w
+
+#----------------------------------------------------------------------
+# copyright (C) 1999-2005 Mitel Networks Corporation
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#
+#----------------------------------------------------------------------
+
+package esmith;
+
+use strict;
+use Errno;
+use esmith::ConfigDB;
+use esmith::HostsDB;
+
+my $db = esmith::ConfigDB->open_ro();
+
+my $hdb = esmith::HostsDB->open();
+
+#------------------------------------------------------------
+# Populate the hosts database with default entries for a given
+# domain if they don't already exist
+#------------------------------------------------------------
+my $event = $ARGV [0] or die "Must provide event name arg";
+my $domain = $ARGV [1] or die "Must provide domain name arg";
+
+#------------------------------------------------------------
+# Create a default host for the SystemName which includes
+# a property static=yes (meaning not editable from the interface)
+#
+# Also create a set of default host records of type "Self".
+#------------------------------------------------------------
+
+my $systemName = $db->get('SystemName')->value;
+
+foreach my $host (qw(ftp mail www proxy wpad), $systemName)
+{
+    my $FQDN = join ".", $host, $domain;
+    next if (defined $hdb->get($FQDN));
+
+    my %properties = (
+	    type => 'host',
+	    HostType => 'Self',
+	    InternalIP => '',
+	    ExternalIP => '',
+	    MACAddress => ''
+	);
+    if ($host eq $systemName)
+    {
+	$properties{static} = "yes";
+    }
+
+    $hdb->new_record($FQDN, \%properties);
+}
+
+exit (0);

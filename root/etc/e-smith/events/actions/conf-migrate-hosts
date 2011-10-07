@@ -1,0 +1,272 @@
+#!/usr/bin/perl -w
+
+#----------------------------------------------------------------------
+# copyright (C) 2002-2005 Mitel Networks Corporation
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 		
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 		
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+# 
+#----------------------------------------------------------------------
+
+#--------------------------------------------------
+# Names in the hosts database can be:
+# - Internal name only (name for host on local LAN)
+#    hp4500=host|InternalIP|192.168.16.201|MacAddress|aa:bb:cc:dd:ee:ff
+#
+# - Hosted by e-smith server (internal/external on e-smith server)
+#    mail=host|ExternalIP|self|InternalIP|self
+#
+# - Externally hosted
+#    www=host|ExternalIP|a.b.c.d
+#
+# - Internal machine behind port-forwarding firewall
+#    secure=host|ExternalIP|d.e.f.g|InternalIP|w.x.y.z
+#
+# Unqualified names in the key apply to all domains
+# FQDNs apply to specific domains and override the wildcard shortnames
+#--------------------------------------------------
+package esmith;
+
+use strict;
+use Errno;
+use esmith::HostsDB;
+my $hdb = esmith::HostsDB->open();
+
+=begin testing
+
+use esmith::TestUtils qw(scratch_copy);
+
+my $h_tmp = '50-hosts/hosts.conf.4.1.2';
+my $c_scratch = scratch_copy('50-hosts/configuration.conf');
+$ENV{ESMITH_HOSTS_DB}  = $h_tmp;
+$ENV{ESMITH_CONFIG_DB} = $c_scratch;
+
+# 4.1.2 Hosts DB which caused bug 2495
+open(TMP, ">$h_tmp") || die $!;
+print TMP <<'OUT';
+archie=host|ExternalIP|209.28.139.23|InternalIP|self
+e-smith=host|ExternalIP|self|InternalIP|self
+e-smith-manager=host|ExternalIP|self|InternalIP|self
+ftp=host|ExternalIP|self|InternalIP|self
+mail=host|ExternalIP|self|InternalIP|self
+proxy=host|ExternalIP|self|InternalIP|self
+server=host|ExternalIP|self|InternalIP|self
+www=host|ExternalIP|self|InternalIP|202.49.164.27
+OUT
+close TMP;
+
+END { unlink $h_tmp }
+
+system($^X, $Original_File);
+
+use esmith::ConfigDB;
+use esmith::HostsDB;
+my $migrated = esmith::HostsDB->open;
+my $config   = esmith::ConfigDB->open;
+my $domain = $config->get('DomainName')->value;
+
+my $www = $migrated->get("www.$domain");
+isa_ok( $www, 'esmith::DB::Record' );
+is( $www->prop('InternalIP'), '202.49.164.27' );
+is( $www->prop('ExternalIP'), '' );
+is( $www->prop('HostType'),   'Local' );
+
+my $archie = $migrated->get("archie.$domain");
+isa_ok( $archie, 'esmith::DB::Record' );
+is( $archie->prop('InternalIP'), '',                    'InternalIP');
+is( $archie->prop('ExternalIP'), '209.28.139.23',       'ExternalIP' );
+is( $archie->prop('HostType'),   'Remote',              'HostType' );
+
+
+my @migrated = grep { $_->key !~ /^(archie|www)/ } 
+               $migrated->get_all_by_prop(type => 'host');
+is_deeply( [ sort map { $_->key } @migrated ],
+           [ sort map { "$_.$domain" } 
+                  qw( e-smith e-smith-manager ftp mail proxy server )],
+                             'domain names fully qualified'
+);
+
+foreach my $host (@migrated) {
+    my $dn = $host->key;
+    is( $host->prop('HostType'),        'Self',  "$dn - HostType");
+    is( $host->prop('ExternalIP'),      ''    ,  "      ExternalIP" );
+    is( $host->prop('InternalIP'),      ''    ,  "      InternalIP" );
+}
+
+=end testing
+
+=cut
+
+#------------------------------------------------------------
+# Populate the hosts database with default entries if they
+# they don't already exist
+#------------------------------------------------------------
+my $event = $ARGV [0];
+
+#------------------------------------------------------------
+# Migrate existing hosts to new format for primary domain, and
+# for any existing virtual domains
+#
+# eg. www=host|...   -> www.{$DomainName}=host|...
+#------------------------------------------------------------
+
+my @FQDNHostList = ();
+my @ShortHostList = ();
+
+foreach my $host ($hdb->hosts)
+{
+    if ($host->key =~ /\./)
+    {
+	# keep track of fully qualified domain name hosts
+	push @FQDNHostList, $host->key;
+    }
+    else
+    {
+	# keep track of single word hosts
+	push @ShortHostList, $host->key;
+    }
+}
+
+# Get the list of local domain names
+use esmith::DomainsDB;
+my $ddb = esmith::DomainsDB->open_ro();
+
+my @domainsList = map { $_-> key } $ddb->domains;
+
+eval "require esmith::NetworkServicesDB";
+
+unless ($@)
+{
+    my $nsdb = esmith::NetworkServicesDB->open();
+
+    if ($nsdb)
+    {
+	my $service_domain = $nsdb->service_domain();
+
+        push @domainsList, $service_domain if $service_domain;
+    }
+}
+
+#-------------------------------------------------------
+# Iterate over each domain to propagate the single host
+# entries for each virtual domain
+#-------------------------------------------------------
+
+foreach my $domain ( @domainsList )
+{
+    # default visibility property is 'Local' as this never existed before
+
+    my %properties = (
+    		Visibility => 'Local'
+    );
+
+    foreach my $host ( @ShortHostList )
+    {
+	$properties{'InternalIP'} = 
+		$hdb->get_prop ($host, 'InternalIP') || '';
+
+	$properties{'ExternalIP'} = 
+		$hdb->get_prop ($host, 'ExternalIP') || '';
+
+	$properties{'MACAddress'} = 
+		$hdb->get_prop ($host, 'MACAddress') || '';
+
+	my $FQDN = "$host.$domain";
+
+	next if (defined $hdb->get ($FQDN));
+
+	# If defined as host 'self', change to new format
+	if (($properties{'InternalIP'} eq 'self') && 
+            ($properties{'ExternalIP'} eq 'self'))
+	{
+	    $properties{'HostType'} = 'Self';
+	    $properties{'InternalIP'} = '';
+	    $properties{'ExternalIP'} = '';
+	    $properties{'MACAddress'} = '';
+	}
+        # defined as 'local' entry in new format
+	elsif( $properties{InternalIP} ne 'self' )
+	{
+	    $properties{'HostType'} = 'Local';
+            $properties{ExternalIP} = '';
+	}
+        elsif( $properties{ExternalIP} ne 'self' ) 
+        {
+            $properties{'HostType'} = 'Remote';
+            $properties{InternalIP} = '';
+        }
+        else {
+            warn "$host has no InternalIP or ExternalIP!\n";
+        }
+
+        $properties{'type'} = 'host';
+	$hdb->new_record($FQDN, \%properties);
+    }
+}
+
+#-------------------------------------------------------
+# Iterate over all of the fully qualified domain names,
+# setting valid ones (from @domainsList) with appropriate
+# values and flagging other non-expected ones with errors
+#-------------------------------------------------------
+
+foreach my $key ( @FQDNHostList )
+{
+    # Skip the hosts if already in the new format
+    next if (defined $hdb->get_prop ($key, 'HostType'));
+
+    my %properties = (
+	Visibility => 'Local'
+    );
+
+    my ($tempHost, $tempDomain) = split /\./, $key, 2;
+
+    my @matches = grep(/$tempDomain/, @domainsList);
+
+    unless (@matches)
+    {
+	# doesn't match an existing domain, set error flag
+	$properties{'error'} = 'Host has no matching domain in system';
+    }
+
+    $properties{'InternalIP'} = $hdb->get_prop ($key, 'InternalIP') || '';
+    $properties{'ExternalIP'} = $hdb->get_prop ($key, 'ExternalIP') || '';
+    $properties{'MACAddress'} = $hdb->get_prop ($key, 'MACAddress') || '';
+
+    # If defined as host 'self', change to new format
+    if ($properties{'InternalIP'} eq 'self')
+    {
+	$properties{'HostType'} = 'Self';
+	$properties{'InternalIP'} = '';
+	$properties{'ExternalIP'} = '';
+	$properties{'MACAddress'} = '';
+    }
+    else  # defined as 'local' entry in new format
+    {
+	$properties{'HostType'} = 'Local';
+	$properties{'ExternalIP'} = '';
+    }
+
+    $properties{'type'} = 'host';
+    $hdb->new_record($key, \%properties);
+}
+
+
+# Remove the old single host entries
+foreach my $host ( @ShortHostList )
+{
+    $hdb->get($host)->delete;
+}
+
+exit (0);

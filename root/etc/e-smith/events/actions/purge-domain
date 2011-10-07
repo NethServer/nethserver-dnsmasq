@@ -1,0 +1,67 @@
+#!/usr/bin/perl -w
+
+#----------------------------------------------------------------------
+# copyright (C) 1999-2005 Mitel Networks Corporation
+# Copyright (C) 2005 Gordon Rowell <gordonr@gormand.com.au>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#----------------------------------------------------------------------
+
+package esmith;
+
+use strict;
+use esmith::util;
+use esmith::DomainsDB;
+use esmith::HostsDB;
+use esmith::AccountsDB;
+
+my $domainsdb = esmith::DomainsDB->open_ro;
+my $hostsdb = esmith::HostsDB->open;
+my $accountsdb = esmith::AccountsDB->open;
+
+#------------------------------------------------------------
+# Remove all hosts for the domain being deleted
+#------------------------------------------------------------
+
+my $event = $ARGV [0];
+# my $domain = $ARGV[1];	# Unused
+
+# Look for invalid hosts in the hostsdb.
+my %domain_names = map { $_->{key} => 1 } $domainsdb->domains;
+
+# We want to check each host and see if it belongs to a domain that we are
+# currently managing. If not, delete it.
+foreach my $host ($hostsdb->hosts)
+{
+    my ($hostpart, $domainpart) = split (/\./, $host->{key}, 2);
+
+    next if exists $domain_names{$domainpart};
+
+    $host->delete;
+}
+
+# Ditto for pseudonyms
+for my $nym ($accountsdb->pseudonyms)
+{
+    my ($host, $domain) = split (/\@/, $nym->{key}, 2);
+
+    next unless $domain;
+
+    next if exists $domain_names{$domain};
+
+    $nym->delete;
+}
+
+exit 0;

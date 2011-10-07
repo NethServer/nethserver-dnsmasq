@@ -1,0 +1,21 @@
+{
+    #------------------------------------------------------------
+    # Static dhcp Entries
+    #------------------------------------------------------------
+    use esmith::HostsDB;
+    my $hdb = esmith::HostsDB->open_ro();
+
+    foreach $host ($hdb->hosts)
+    {
+        my $InternalIP = $host->prop('InternalIP');
+        next unless (defined($InternalIP) && ($InternalIP ne ''));
+
+        my $MACAddress = $host->prop('MACAddress');
+        next unless ( defined($MACAddress) && ($MACAddress ne ''));
+
+        my $Comment = $host->prop('Comment') || "";
+        $OUT .= "# Static dhcp host: $Comment\n";
+        $OUT .= "dhcp-host=$MACAddress,$InternalIP\n";
+    }
+    undef;      # We need a return value
+}
