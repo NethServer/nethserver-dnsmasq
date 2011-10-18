@@ -9,13 +9,12 @@
         
 	next unless ($host->prop('HostType') ne 'Self'); # skip all local alias
 
-        my $InternalIP = $host->prop('InternalIP') || '';
-        my $ExternalIP = $host->prop('ExternalIP') || '';
-        next unless (($InternalIP ne '') || ($ExternalIP  ne '')); # skip all entries without and IP
+        my $IPAddress = $host->prop('IPAddress') || '';
+        next unless ($IPAddress ne ''); # skip all entries without an IP
         
 	my $Comment = $host->prop('Comment') || "";
         $OUT .= "# $Comment\n" unless ($Comment eq "");
-        $OUT .= "$InternalIP$ExternalIP\t".$host->key."\n"; #one of InternalIP or ExternalIP is surely blank
+        $OUT .= "$IPAddress\t".$host->key."\n";
     }
     undef;      # We need a return value
 }

@@ -7,15 +7,15 @@
 
     foreach $host ($hdb->hosts)
     {
-        my $InternalIP = $host->prop('InternalIP');
-        next unless (defined($InternalIP) && ($InternalIP ne ''));
+        my $IPAddress = $host->prop('IPAddress');
+        next unless (defined($IPAddress) && ($IPAddress ne ''));
 
         my $MACAddress = $host->prop('MACAddress');
         next unless ( defined($MACAddress) && ($MACAddress ne ''));
 
         my $Comment = $host->prop('Comment') || "";
         $OUT .= "# Static dhcp host: $Comment\n";
-        $OUT .= "dhcp-host=$MACAddress,$InternalIP\n";
+        $OUT .= "dhcp-host=$MACAddress,$IPAddress\n";
     }
     undef;      # We need a return value
 }

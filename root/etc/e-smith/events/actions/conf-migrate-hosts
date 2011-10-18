@@ -22,16 +22,16 @@
 #--------------------------------------------------
 # Names in the hosts database can be:
 # - Internal name only (name for host on local LAN)
-#    hp4500=host|InternalIP|192.168.16.201|MacAddress|aa:bb:cc:dd:ee:ff
+#    hp4500=host|IPAddress|192.168.16.201|MacAddress|aa:bb:cc:dd:ee:ff
 #
 # - Hosted by e-smith server (internal/external on e-smith server)
-#    mail=host|ExternalIP|self|InternalIP|self
+#    mail=host|IPAddress|self|IPAddress|self
 #
 # - Externally hosted
-#    www=host|ExternalIP|a.b.c.d
+#    www=host|IPAddress|a.b.c.d
 #
 # - Internal machine behind port-forwarding firewall
-#    secure=host|ExternalIP|d.e.f.g|InternalIP|w.x.y.z
+#    secure=host|IPAddress|d.e.f.g|IPAddress|w.x.y.z
 #
 # Unqualified names in the key apply to all domains
 # FQDNs apply to specific domains and override the wildcard shortnames
@@ -55,14 +55,14 @@ $ENV{ESMITH_CONFIG_DB} = $c_scratch;
 # 4.1.2 Hosts DB which caused bug 2495
 open(TMP, ">$h_tmp") || die $!;
 print TMP <<'OUT';
-archie=host|ExternalIP|209.28.139.23|InternalIP|self
-e-smith=host|ExternalIP|self|InternalIP|self
-e-smith-manager=host|ExternalIP|self|InternalIP|self
-ftp=host|ExternalIP|self|InternalIP|self
-mail=host|ExternalIP|self|InternalIP|self
-proxy=host|ExternalIP|self|InternalIP|self
-server=host|ExternalIP|self|InternalIP|self
-www=host|ExternalIP|self|InternalIP|202.49.164.27
+archie=host|IPAddress|209.28.139.23|IPAddress|self
+e-smith=host|IPAddress|self|IPAddress|self
+e-smith-manager=host|IPAddress|self|IPAddress|self
+ftp=host|IPAddress|self|IPAddress|self
+mail=host|IPAddress|self|IPAddress|self
+proxy=host|IPAddress|self|IPAddress|self
+server=host|IPAddress|self|IPAddress|self
+www=host|IPAddress|self|IPAddress|202.49.164.27
 OUT
 close TMP;
 
@@ -78,14 +78,14 @@ my $domain = $config->get('DomainName')->value;
 
 my $www = $migrated->get("www.$domain");
 isa_ok( $www, 'esmith::DB::Record' );
-is( $www->prop('InternalIP'), '202.49.164.27' );
-is( $www->prop('ExternalIP'), '' );
+is( $www->prop('IPAddress'), '202.49.164.27' );
+is( $www->prop('IPAddress'), '' );
 is( $www->prop('HostType'),   'Local' );
 
 my $archie = $migrated->get("archie.$domain");
 isa_ok( $archie, 'esmith::DB::Record' );
-is( $archie->prop('InternalIP'), '',                    'InternalIP');
-is( $archie->prop('ExternalIP'), '209.28.139.23',       'ExternalIP' );
+is( $archie->prop('IPAddress'), '',                    'IPAddress');
+is( $archie->prop('IPAddress'), '209.28.139.23',       'IPAddress' );
 is( $archie->prop('HostType'),   'Remote',              'HostType' );
 
 
@@ -100,8 +100,8 @@ is_deeply( [ sort map { $_->key } @migrated ],
 foreach my $host (@migrated) {
     my $dn = $host->key;
     is( $host->prop('HostType'),        'Self',  "$dn - HostType");
-    is( $host->prop('ExternalIP'),      ''    ,  "      ExternalIP" );
-    is( $host->prop('InternalIP'),      ''    ,  "      InternalIP" );
+    is( $host->prop('IPAddress'),      ''    ,  "      IPAddress" );
+    is( $host->prop('IPAddress'),      ''    ,  "      IPAddress" );
 }
 
 =end testing
@@ -173,11 +173,11 @@ foreach my $domain ( @domainsList )
 
     foreach my $host ( @ShortHostList )
     {
-	$properties{'InternalIP'} = 
-		$hdb->get_prop ($host, 'InternalIP') || '';
+	$properties{'IPAddress'} = 
+		$hdb->get_prop ($host, 'IPAddress') || '';
 
-	$properties{'ExternalIP'} = 
-		$hdb->get_prop ($host, 'ExternalIP') || '';
+	$properties{'IPAddress'} = 
+		$hdb->get_prop ($host, 'IPAddress') || '';
 
 	$properties{'MACAddress'} = 
 		$hdb->get_prop ($host, 'MACAddress') || '';
@@ -187,27 +187,27 @@ foreach my $domain ( @domainsList )
 	next if (defined $hdb->get ($FQDN));
 
 	# If defined as host 'self', change to new format
-	if (($properties{'InternalIP'} eq 'self') && 
-            ($properties{'ExternalIP'} eq 'self'))
+	if (($properties{'IPAddress'} eq 'self') && 
+            ($properties{'IPAddress'} eq 'self'))
 	{
 	    $properties{'HostType'} = 'Self';
-	    $properties{'InternalIP'} = '';
-	    $properties{'ExternalIP'} = '';
+	    $properties{'IPAddress'} = '';
+	    $properties{'IPAddress'} = '';
 	    $properties{'MACAddress'} = '';
 	}
         # defined as 'local' entry in new format
-	elsif( $properties{InternalIP} ne 'self' )
+	elsif( $properties{IPAddress} ne 'self' )
 	{
 	    $properties{'HostType'} = 'Local';
-            $properties{ExternalIP} = '';
+            $properties{IPAddress} = '';
 	}
-        elsif( $properties{ExternalIP} ne 'self' ) 
+        elsif( $properties{IPAddress} ne 'self' ) 
         {
             $properties{'HostType'} = 'Remote';
-            $properties{InternalIP} = '';
+            $properties{IPAddress} = '';
         }
         else {
-            warn "$host has no InternalIP or ExternalIP!\n";
+            warn "$host has no IPAddress or IPAddress!\n";
         }
 
         $properties{'type'} = 'host';
@@ -240,22 +240,22 @@ foreach my $key ( @FQDNHostList )
 	$properties{'error'} = 'Host has no matching domain in system';
     }
 
-    $properties{'InternalIP'} = $hdb->get_prop ($key, 'InternalIP') || '';
-    $properties{'ExternalIP'} = $hdb->get_prop ($key, 'ExternalIP') || '';
+    $properties{'IPAddress'} = $hdb->get_prop ($key, 'IPAddress') || '';
+    $properties{'IPAddress'} = $hdb->get_prop ($key, 'IPAddress') || '';
     $properties{'MACAddress'} = $hdb->get_prop ($key, 'MACAddress') || '';
 
     # If defined as host 'self', change to new format
-    if ($properties{'InternalIP'} eq 'self')
+    if ($properties{'IPAddress'} eq 'self')
     {
 	$properties{'HostType'} = 'Self';
-	$properties{'InternalIP'} = '';
-	$properties{'ExternalIP'} = '';
+	$properties{'IPAddress'} = '';
+	$properties{'IPAddress'} = '';
 	$properties{'MACAddress'} = '';
     }
     else  # defined as 'local' entry in new format
     {
 	$properties{'HostType'} = 'Local';
-	$properties{'ExternalIP'} = '';
+	$properties{'IPAddress'} = '';
     }
 
     $properties{'type'} = 'host';

@@ -54,8 +54,8 @@ foreach my $host (qw(ftp mail www proxy wpad), $systemName)
     my %properties = (
 	    type => 'host',
 	    HostType => 'Self',
-	    InternalIP => '',
-	    ExternalIP => '',
+	    IPAddress => '',
+	    IPAddress => '',
 	    MACAddress => ''
 	);
     if ($host eq $systemName)
