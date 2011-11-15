@@ -12,7 +12,6 @@ templates2events("/etc/dnsmasq.conf", $event);
 templates2events("/etc/dnsmasq.d/dhcp.conf", $event);
 templates2events("/etc/dnsmasq.d/dns.conf", $event);
 templates2events("/etc/resolv.conf", $event);
-event_link("conf-hostsdb", $event , "03");
 event_link("purge-domain", $event, "04");
 event_link("create-default-hosts", $event, "04");
 event_link("conf-hostsdb", $event , "04");
