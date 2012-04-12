@@ -92,3 +92,9 @@ event_link("purge-domain", $event, "04");
 templates2events("/etc/hosts", $event);
 safe_symlink("reload", "root/etc/e-smith/events/$event/services2adjust/dnsmasq");
 
+
+#--------------------------------------------------
+# actions for dhcp-reservation validator
+#--------------------------------------------------
+my $validator = 'dhcp-reservation';
+validator_link("ip-not-reserved-local", $validator, "20");

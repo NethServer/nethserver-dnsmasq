@@ -1,0 +1,88 @@
+#!/usr/bin/perl -w
+package esmith;
+
+use esmith::ConfigDB;
+use esmith::util;
+
+my $ip = shift || "";
+exit 1 unless ($ip ne "");
+
+my $db = esmith::ConfigDB->open_ro() or exit 1;
+
+exit (not_in_dhcp_range($ip) || not_taken($ip) || must_be_local($ip));
+
+sub not_in_dhcp_range
+{
+    my $address = shift;
+    my $status = $db->get('dhcpd')->prop('status') || "disabled";
+    return 0 unless $status eq "enabled";
+    my $start = $db->get('dhcpd')->prop('start');
+    my $end = $db->get('dhcpd')->prop('end');
+    if (esmith::util::IPquadToAddr($start)
+        <= esmith::util::IPquadToAddr($address)
+        &&
+        esmith::util::IPquadToAddr($address)
+        <= esmith::util::IPquadToAddr($end))
+    {
+        print "IP is inside DHCP range\n";
+        return 1; 
+    }
+    return 0;
+}
+
+sub not_taken
+{
+    my $localip = shift;
+    my $server_localip = $db->get_value('LocalIP') || '';
+    my $server_gateway = $db->get_value('GatewayIP') || '';
+    my $server_extip = $db->get_value('ExternalIP') || '';
+
+    if ($localip eq $server_localip)
+    {
+        print "IP is server local IP\n";
+        return 1;
+    }
+    elsif ($localip eq $server_gateway)
+    {
+        print "IP is local gateway IP\n";
+        return 1;
+    }
+    elsif (($db->get_value('SystemMode') ne 'serveronly') &&
+           ($server_extip eq $localip))
+    {
+        print "IP is server local IP\n";
+        return 1;
+    }
+    elsif ($localip eq '127.0.0.1')
+    {
+        print "IP can't be 127.0.0.1\n";
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+
+    return 0;
+}
+
+sub must_be_local
+{
+    my $localip = shift;
+
+    # Make sure that the IP is indeed local.
+    my $ndb = esmith::NetworksDB->open_ro;
+    my @local_list = $ndb->local_access_spec;
+
+    foreach my $spec (@local_list)
+    {
+        next if $spec eq '127.0.0.1';
+        if (Net::IPv4Addr::ipv4_in_network($spec, $localip))
+        {
+            return 0;
+        }
+    }
+    # Not OK. The IP is not on any of our local networks.
+    print "The IP is not on any local networks\n";
+    return 1;
+}
