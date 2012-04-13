@@ -22,10 +22,10 @@ dhcp-authoritative
 # Send router configuration to clients, if defined:
 {
     my $router = '';
-    if(defined $SystemMode && $SystemMode =~ /servergateway/) {
-	$router = $InternalInterface{IPAddress};
+    if($dnsmasq{DhcpGatewayIP}) {
+	$router = $dnsmasq{DhcpGatewayIP};
     } else {
-	$router = defined $GatewayIP ? $GatewayIP : '';
+	$router = $InternalInterface{IPAddress};
     }
 
     if ($router) {
