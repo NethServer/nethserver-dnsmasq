@@ -1,0 +1,18 @@
+# Don't read /etc/resolv.conf. Get upstream servers only from the
+# command line or the dnsmasq configuration file.
+no-resolv
+
+# Specify IP address of upstream servers directly. Setting this flag
+# does not suppress reading of /etc/resolv.conf, use "no-resolv" to do
+# that.
+{
+    foreach (split ',', $dns{NameServers}, 2) {       
+	$OUT .= "server=$_\n";
+    }
+}
+# By  default,  dnsmasq  will  send queries to any of the upstream
+# servers it knows about and tries to favour servers to are  known
+# to  be  up.  Uncommenting this forces dnsmasq to try each query
+# with  each  server  strictly  in  the  order  they   appear   in
+# /etc/resolv.conf
+strict-order
