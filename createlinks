@@ -2,41 +2,6 @@
 
 use esmith::Build::CreateLinks  qw(:all);
 
-
-#--------------------------------------------------
-# actions for bootstrap-console-save event
-#--------------------------------------------------
-$event = "bootstrap-console-save";
-
-templates2events("/etc/dnsmasq.conf", $event);
-templates2events("/etc/dnsmasq.d/dhcp.conf", $event);
-templates2events("/etc/dnsmasq.d/dns.conf", $event);
-templates2events("/etc/resolv.conf", $event);
-event_link("purge-domain", $event, "04");
-event_link("create-default-hosts", $event, "04");
-event_link("conf-hostsdb", $event , "04");
-templates2events("/etc/hosts", $event);
-safe_symlink("restart", "root/etc/e-smith/events/$event/services2adjust/dnsmasq");
-
-##--------------------------------------------------
-## actions for console-save event
-##--------------------------------------------------
-$event = "console-save";
-
-event_link("conf-hostsdb", $event , "04");
-
-#--------------------------------------------------
-# actions for remoteaccess-update event
-#--------------------------------------------------
-
-$event = "remoteaccess-update";
-
-safe_symlink("restart", "root/etc/e-smith/events/$event/services2adjust/dnsmasq");
-
-#--------------------------------------------------
-# actions for update event
-# --------------------------------------------------
-
 event_templates('nethserver-dnsmasq-update',
 		'/etc/dnsmasq.conf',
 		'/etc/dnsmasq.d/dhcp.conf',
@@ -46,52 +11,14 @@ event_templates('nethserver-dnsmasq-update',
 event_actions('nethserver-dnsmasq-update',
 	      'initialize-default-databases' => '00',
 	      'firewall-adjust' => '30',
-	      'runlevel-adjust' => '30');
+	      'runlevel-adjust' => '40');
 
-safe_symlink("restart", "root/etc/e-smith/events/$_/services2adjust/dnsmasq") foreach (qw(
+safe_symlink("reload", "root/etc/e-smith/events/$_/services2adjust/dnsmasq") foreach (qw(
+    host-create 
+    host-delete 
+    host-modify 
     nethserver-dnsmasq-update
 ));
-
-
-#--------------------------------------------------
-# actions for save event
-# --------------------------------------------------
-
-$event = "nethserver-dnsmasq-save";
-
-safe_symlink("reload", "root/etc/e-smith/events/$event/services2adjust/dnsmasq");
-templates2events("/etc/dnsmasq.conf", $event);
-templates2events("/etc/dnsmasq.d/dhcp.conf", $event);
-templates2events("/etc/dnsmasq.d/dns.conf", $event);
-templates2events("/etc/resolv.conf", $event);
-
-
-
-foreach $event ( qw(host-create host-delete host-modify) )
-{
-    safe_symlink("reload", "root/etc/e-smith/events/$event/services2adjust/dnsmasq");
-    templates2events("/etc/hosts", $event);
-}
-
-
-##--------------------------------------------------
-## actions for domain-create event
-##--------------------------------------------------
-$event = "domain-create";
-#
-event_link("create-default-hosts", $event, "04");
-templates2events("/etc/hosts", $event);
-safe_symlink("reload", "root/etc/e-smith/events/$event/services2adjust/dnsmasq");
-
-##--------------------------------------------------
-## actions for domain-delete event
-##--------------------------------------------------
-$event = "domain-delete";
-
-event_link("purge-domain", $event, "04");
-templates2events("/etc/hosts", $event);
-safe_symlink("reload", "root/etc/e-smith/events/$event/services2adjust/dnsmasq");
-
 
 #--------------------------------------------------
 # actions for dhcp-reservation validator
