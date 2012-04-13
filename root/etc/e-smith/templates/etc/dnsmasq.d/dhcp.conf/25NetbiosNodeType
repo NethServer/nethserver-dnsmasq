@@ -1,9 +1,0 @@
-{
-    return "" unless ($dhcpd{status} eq 'enabled');
-
-    my $server_role = $smb{ServerRole} || 'WS';
-
-    return "" unless $server_role =~ m{^(PDC|ADS)$};
-
-    $OUT.= "dhcp-option=46,8    # netbios node type\n";
-}
