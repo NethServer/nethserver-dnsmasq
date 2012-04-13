@@ -4,9 +4,9 @@
     # is "none". Refs #1040 #1041
     #
     my $role = $DB->get_prop('dns', 'dnsmasq');
-    my $state = $DB->get_prop('dnsmasq', 'state');
+    my $status = $DB->get_prop('dnsmasq', 'status');
     
-    if($state eq 'enabled' && $role eq 'none') {
+    if($status eq 'enabled' && $role eq 'none') {
 	$DB->set_prop('dns', 'role', 'resolver');
     }
 }
