@@ -1,6 +1,0 @@
-{
-    return "" unless ($dhcpd{status} eq 'enabled');
-
-    my $lease = $dhcpd{LeaseTime} || "86400";
-    $OUT .= "dhcp-range=".$dhcpd{'start'}.",".$dhcpd{'end'}.",$lease";
-}
