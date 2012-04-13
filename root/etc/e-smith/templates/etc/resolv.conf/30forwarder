@@ -1,5 +1,0 @@
-{
-    $OUT .= "nameserver ".$dnsmasq{Forwarder}."\n" unless (!defined($dnsmasq{Forwarder}) || $dnsmasq{Forwarder} eq '');
-    $OUT .= "nameserver ".$dnsmasq{Forwarder2}."\n" unless (!defined($dnsmasq{Forwarder2}) || $dnsmasq{Forwarder2} eq '');
-    return undef;
-}
