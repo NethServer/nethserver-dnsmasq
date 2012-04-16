@@ -16,7 +16,7 @@
 
         my $Comment = $host->prop('Comment');
         $OUT .= "# $Comment\n" if $Comment;
-        $OUT .= $MACAddress . "\t" . $host->key . "\n";
+        $OUT .= $MACAddress . "\t" . $IPAddress . "\n";
     }
     undef;      # We need a return value
 }

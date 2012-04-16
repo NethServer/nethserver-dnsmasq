@@ -21,12 +21,18 @@ event_actions('nethserver-dnsmasq-uninstall',
 	      'firewall-adjust' => '30',
 	      'runlevel-adjust' => '40');
 
-safe_symlink("reload", "root/etc/e-smith/events/$_/services2adjust/dnsmasq") foreach (qw(
+foreach (qw(
     host-create 
     host-delete 
     host-modify 
     nethserver-dnsmasq-update
-));
+)) {
+    event_templates($_,
+		    '/etc/ethers',
+		    '/etc/hosts');
+
+    safe_symlink("reload", 'root/etc/e-smith/events/' . $_ . '/services2adjust/dnsmasq');
+}
 
 #--------------------------------------------------
 # actions for dhcp-reservation validator
