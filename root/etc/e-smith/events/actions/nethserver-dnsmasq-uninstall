@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#
+# Set PackageStatus to uninstalled and reset dns role to "none"
+#
+
+/sbin/e-smith/db configuration setprop dnsmasq PackageStatus uninstalled && \
+    /sbin/e-smith/db configuration setprop dns role none
+
+exit $?
