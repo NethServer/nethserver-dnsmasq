@@ -4,8 +4,8 @@ use esmith::Build::CreateLinks  qw(:all);
 
 event_templates('nethserver-dnsmasq-update',
 		'/etc/dnsmasq.conf',
-		'/etc/dnsmasq.d/dhcp.conf',
-		'/etc/dnsmasq.d/dns.conf',
+		'/etc/ethers',
+		'/etc/hosts',
 		'/etc/resolv.conf');
 
 event_actions('nethserver-dnsmasq-update',

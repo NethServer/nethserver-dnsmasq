@@ -1,3 +1,4 @@
+# BEGIN dnsmasq reservations
 {
     #------------------------------------------------------------
     # Static dhcp Entries
@@ -13,9 +14,10 @@
         my $MACAddress = $host->prop('MACAddress');
         next unless ( defined($MACAddress) && ($MACAddress ne ''));
 
-        my $Comment = $host->prop('Comment') || "";
-        $OUT .= "# Static dhcp host: $Comment\n";
-        $OUT .= "dhcp-host=$MACAddress,$IPAddress\n";
+        my $Comment = $host->prop('Comment');
+        $OUT .= "# $Comment\n" if $Comment;
+        $OUT .= $MACAddress . "\t" . $host->key . "\n";
     }
     undef;      # We need a return value
 }
+# END dnsmasq reservations

@@ -1,3 +1,4 @@
+
 # If you want dnsmasq to listen for DHCP and DNS requests only on
 # specified interfaces (and the loopback) give the name of the
 # interface (eg eth0) here.
@@ -16,6 +17,3 @@
 {
    $OUT.="domain=".$DomainName."\n";
 }
-
-# Include a another lot of configuration options.
-conf-dir=/etc/dnsmasq.d
