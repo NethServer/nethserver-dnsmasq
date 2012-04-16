@@ -35,3 +35,7 @@ dhcp-authoritative
     }
 }
 
+# Read /etc/ethers for information about hosts for the DHCP server.
+# The format of /etc/ethers is a hardware address, followed by either
+# a hostname or dotted-quad IP address.
+read-ethers
