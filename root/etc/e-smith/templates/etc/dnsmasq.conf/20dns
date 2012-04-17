@@ -4,6 +4,5 @@ domain-needed
 # Never forward addresses in the non-routed address spaces.
 bogus-priv
 
-# Set this (and domain: see below) if you want to have a domain
-# automatically added to simple names in a hosts-file.
+# Domain is automatically added to simple names in a hosts-file.
 expand-hosts
