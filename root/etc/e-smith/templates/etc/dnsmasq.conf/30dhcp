@@ -39,3 +39,8 @@ dhcp-authoritative
 # The format of /etc/ethers is a hardware address, followed by either
 # a hostname or dotted-quad IP address.
 read-ethers
+
+# Whenever a new DHCP lease is created, or an old one destroyed, the
+# executable specified by this option is run.
+dhcp-script=/usr/libexec/nethserver/dnsmasq-leasestatus
+

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+TIMESTAMP=`date`
+
+echo "[$TIMESTAMP]" $@ >> /tmp/dhcp-script.log
+
+
+
