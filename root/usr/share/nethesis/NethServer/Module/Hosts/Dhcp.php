@@ -38,7 +38,7 @@ class Dhcp extends \Nethgui\Controller\TableController
         );
 
         $parameterSchema = array(
-            array('hostname', Validate::HOSTNAME, \Nethgui\Controller\Table\Modify::KEY),
+            array('hostname', Validate::HOSTNAME_SIMPLE, \Nethgui\Controller\Table\Modify::KEY),
             array('IPAddress', Validate::IPv4, \Nethgui\Controller\Table\Modify::FIELD), 
             array('MACAddress', Validate::MACADDRESS, \Nethgui\Controller\Table\Modify::FIELD), 
             array('HostType', '/^Local$/', \Nethgui\Controller\Table\Modify::FIELD),
