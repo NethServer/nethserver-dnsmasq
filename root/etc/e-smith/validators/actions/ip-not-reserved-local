@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
 package esmith;
 
+use strict;
 use esmith::ConfigDB;
 use esmith::util;
 
@@ -14,17 +15,17 @@ exit (not_in_dhcp_range($ip) || not_taken($ip) || must_be_local($ip));
 sub not_in_dhcp_range
 {
     my $address = shift;
-    my $status = $db->get('dhcpd')->prop('status') || "disabled";
+    my $status = $db->get('dnsmasq')->prop('status') || "disabled";
     return 0 unless $status eq "enabled";
-    my $start = $db->get('dhcpd')->prop('start');
-    my $end = $db->get('dhcpd')->prop('end');
+    my $start = $db->get('dnsmasq')->prop('DhcpRangeStart');
+    my $end = $db->get('dnsmasq')->prop('DhcpRangeEnd');
     if (esmith::util::IPquadToAddr($start)
         <= esmith::util::IPquadToAddr($address)
         &&
         esmith::util::IPquadToAddr($address)
         <= esmith::util::IPquadToAddr($end))
     {
-        print "IP is inside DHCP range\n";
+        print "valid_range\n";
         return 1; 
     }
     return 0;
@@ -32,35 +33,20 @@ sub not_in_dhcp_range
 
 sub not_taken
 {
-    my $localip = shift;
-    my $server_localip = $db->get_value('LocalIP') || '';
-    my $server_gateway = $db->get_value('GatewayIP') || '';
-    my $server_extip = $db->get_value('ExternalIP') || '';
+    my $checkIp = shift;
 
-    if ($localip eq $server_localip)
-    {
-        print "IP is server local IP\n";
-        return 1;
-    }
-    elsif ($localip eq $server_gateway)
-    {
-        print "IP is local gateway IP\n";
-        return 1;
-    }
-    elsif (($db->get_value('SystemMode') ne 'serveronly') &&
-           ($server_extip eq $localip))
-    {
-        print "IP is server local IP\n";
-        return 1;
-    }
-    elsif ($localip eq '127.0.0.1')
-    {
-        print "IP can't be 127.0.0.1\n";
-        return 1;
-    }
-    else
-    {
-        return 0;
+    my @takenList = map { defined $_ ? $_ : () } ('127.0.0.1',
+				$db->get_prop('InternalInterface', 'IPAddress'),
+				$db->get_value('GatewayIP'),
+				$db->get_prop('ExternalInterface', 'IPAddress')
+    );
+    
+    # XXX: we can check if IP is in use. Having MAC address:
+    # ip neigh show $checkIp - Refs #1057
+
+    if ( grep { $checkIp eq $_ } @takenList ) {
+	print "valid_taken\n";
+	return 1;
     }
 
     return 0;
@@ -83,6 +69,6 @@ sub must_be_local
         }
     }
     # Not OK. The IP is not on any of our local networks.
-    print "The IP is not on any local networks\n";
+    print "valid_local\n";
     return 1;
 }
