@@ -11,15 +11,17 @@ event_templates($_,
   nethserver-dnsmasq-uninstall
 ));
 
+# conf BEFORE expand templates, to read db default values - Refs #1059
 event_actions('nethserver-dnsmasq-update',
 	      'initialize-default-databases' => '00',
+	      'nethserver-dnsmasq-conf' => '05',
 	      'firewall-adjust' => '30',
 	      'runlevel-adjust' => '40');
 
 event_actions('nethserver-dnsmasq-uninstall',
 	      'nethserver-dnsmasq-uninstall' => '20',
-	      'firewall-adjust' => '30',
-	      'runlevel-adjust' => '40');
+	      'firewall-adjust' => '40',
+	      'runlevel-adjust' => '50');
 
 foreach (qw(
     host-create 
