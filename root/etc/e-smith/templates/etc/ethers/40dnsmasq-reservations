@@ -14,8 +14,8 @@
         my $MACAddress = $host->prop('MACAddress');
         next unless ( defined($MACAddress) && ($MACAddress ne ''));
 
-        my $Comment = $host->prop('Comment');
-        $OUT .= "# $Comment\n" if $Comment;
+        my $Description = $host->prop('Description');
+        $OUT .= "# $Description\n" if $Description;
         $OUT .= $MACAddress . "\t" . $IPAddress . "\n";
     }
     undef;      # We need a return value
