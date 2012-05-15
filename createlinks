@@ -33,7 +33,8 @@ foreach (qw(
 		    '/etc/ethers',
 		    '/etc/hosts');
 
-    safe_symlink("reload", 'root/etc/e-smith/events/' . $_ . '/services2adjust/dnsmasq');
+    event_services($_, 
+		   'dnsmasq' => 'reload');
 }
 
 #--------------------------------------------------
@@ -41,3 +42,12 @@ foreach (qw(
 #--------------------------------------------------
 my $validator = 'dhcp-reservation';
 validator_link("ip-not-reserved-local", $validator, "20");
+
+
+#--------------------------------------------------
+# nethserver-dnsmasq-save event
+#--------------------------------------------------
+event_templates('nethserver-dnsmasq-save',
+		'/etc/dnsmasq.conf');
+event_services('nethserver-dnsmasq-save',
+	       'dnsmasq' => 'reload');

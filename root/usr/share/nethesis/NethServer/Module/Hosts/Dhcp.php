@@ -56,6 +56,7 @@ class Dhcp extends \Nethgui\Controller\TableController
             ->addRowAction(new \Nethgui\Controller\Table\Modify('update', $parameterSchema, 'NethServer\Template\Hosts\Dhcp')) #Attention: this template is from NethServer directory
             ->addRowAction(new \Nethgui\Controller\Table\Modify('delete', $parameterSchema, 'Nethgui\Template\Table\Delete')) #Attention: this template is from NethGui directory
             ->addTableAction(new \Nethgui\Controller\Table\Modify('create', $parameterSchema, 'NethServer\Template\Hosts\Dhcp'))
+            ->addTableAction(new Dhcp\Configure())
             ->addTableAction(new \Nethgui\Controller\Table\Help('Help'))
         ;
 
