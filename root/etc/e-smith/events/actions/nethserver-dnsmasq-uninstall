@@ -1,10 +1,8 @@
-#!/bin/bash
+#!/usr/bin/perl
 
-#
-# Set PackageStatus to uninstalled and reset dns role to "none"
-#
+use NethServer::Service;
+use strict;
 
-/sbin/e-smith/db configuration setprop dnsmasq PackageStatus uninstalled && \
-    /sbin/e-smith/db configuration setprop dns role none
+NethServer::Service::manage_remove('nethserver-dnsmasq',
+				   'dnsmasq');
 
-exit $?
