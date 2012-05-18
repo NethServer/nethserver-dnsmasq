@@ -19,7 +19,7 @@ event_actions('nethserver-dnsmasq-update',
 	      'firewall-adjust' => '30',
 	      'runlevel-adjust' => '40');
 
-event_services('nethserver-dnsmasq-update'
+event_services('nethserver-dnsmasq-update',
 	       'dnsmasq' => 'restart');
 
 event_actions('nethserver-dnsmasq-uninstall',
