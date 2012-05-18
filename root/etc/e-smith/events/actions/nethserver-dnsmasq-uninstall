@@ -1,7 +1,12 @@
 #!/usr/bin/perl
 
 use NethServer::Service;
+use esmith::ConfigDB;
 use strict;
+
+my $DB = esmith::ConfigDB->open() || die('Could not open configuration database.');
+
+$DB->set_prop('dns', 'role', 'none');
 
 NethServer::Service::manage_remove('nethserver-dnsmasq',
 				   'dnsmasq');
