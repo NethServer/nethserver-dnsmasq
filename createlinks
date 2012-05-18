@@ -11,6 +11,7 @@ event_templates($_,
   nethserver-dnsmasq-uninstall
 ));
 
+
 # conf BEFORE expand templates, to read db default values - Refs #1059
 event_actions('nethserver-dnsmasq-update',
 	      'initialize-default-databases' => '00',
@@ -18,16 +19,20 @@ event_actions('nethserver-dnsmasq-update',
 	      'firewall-adjust' => '30',
 	      'runlevel-adjust' => '40');
 
+event_services('nethserver-dnsmasq-update'
+	       'dnsmasq' => 'restart');
+
 event_actions('nethserver-dnsmasq-uninstall',
 	      'nethserver-dnsmasq-uninstall' => '02',
 	      'firewall-adjust' => '40',
 	      'runlevel-adjust' => '50');
 
+
+
 foreach (qw(
     host-create 
     host-delete 
     host-modify 
-    nethserver-dnsmasq-update
 )) {
     event_templates($_,
 		    '/etc/ethers',
@@ -51,3 +56,4 @@ event_templates('nethserver-dnsmasq-save',
 		'/etc/dnsmasq.conf');
 event_services('nethserver-dnsmasq-save',
 	       'dnsmasq' => 'restart');
+
