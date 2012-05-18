@@ -50,4 +50,4 @@ validator_link("ip-not-reserved-local", $validator, "20");
 event_templates('nethserver-dnsmasq-save',
 		'/etc/dnsmasq.conf');
 event_services('nethserver-dnsmasq-save',
-	       'dnsmasq' => 'reload');
+	       'dnsmasq' => 'restart');
