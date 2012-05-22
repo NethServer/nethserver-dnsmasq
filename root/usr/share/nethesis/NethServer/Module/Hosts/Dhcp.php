@@ -38,24 +38,14 @@ class Dhcp extends \Nethgui\Controller\TableController
             'Actions',
         );
 
-        $IPAddressValidator = $this->getPlatform()
-            ->createValidator(Validate::IPv4)
-            ->platform('dhcp-reservation');
-
-        $parameterSchema = array(
-            array('hostname', Validate::HOSTNAME_SIMPLE, \Nethgui\Controller\Table\Modify::KEY),
-            array('Description', Validate::ANYTHING, \Nethgui\Controller\Table\Modify::FIELD),
-            array('IPAddress', $IPAddressValidator, \Nethgui\Controller\Table\Modify::FIELD),
-            array('MACAddress', Validate::MACADDRESS, \Nethgui\Controller\Table\Modify::FIELD),
-            array('HostType', '/^Local$/', \Nethgui\Controller\Table\Modify::FIELD),
-        );
+        $tableAdapter = $this->getPlatform()->getTableAdapter('hosts', 'host', array('HostType' => "/^Local$/"));
 
         $this
-            ->setTableAdapter($this->getPlatform()->getTableAdapter('hosts', 'host', array('HostType' => "/^Local$/")))
+            ->setTableAdapter($tableAdapter)
             ->setColumns($columns)
-            ->addRowAction(new \Nethgui\Controller\Table\Modify('update', $parameterSchema, 'NethServer\Template\Hosts\Dhcp')) #Attention: this template is from NethServer directory
-            ->addRowAction(new \Nethgui\Controller\Table\Modify('delete', $parameterSchema, 'Nethgui\Template\Table\Delete')) #Attention: this template is from NethGui directory
-            ->addTableAction(new \Nethgui\Controller\Table\Modify('create', $parameterSchema, 'NethServer\Template\Hosts\Dhcp'))
+            ->addRowAction(new Dhcp\Modify('update'))
+            ->addRowAction(new Dhcp\Modify('delete')) 
+            ->addTableAction(new Dhcp\Modify('create'))
             ->addTableAction(new Dhcp\Configure())
             ->addTableAction(new \Nethgui\Controller\Table\Help('Help'))
         ;

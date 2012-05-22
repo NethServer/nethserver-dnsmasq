@@ -45,8 +45,10 @@ foreach (qw(
 #--------------------------------------------------
 # actions for dhcp-reservation validator
 #--------------------------------------------------
-my $validator = 'dhcp-reservation';
-validator_link("ip-not-reserved-local", $validator, "20");
+validator_actions('dhcp-reservation',
+		  'ip-not-reserved-local' => '20',
+		  'ip-mac-address' => '30',
+    );
 
 
 #--------------------------------------------------

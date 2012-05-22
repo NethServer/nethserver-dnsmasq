@@ -1,0 +1,35 @@
+#!/usr/bin/perl
+
+#
+# ip-mac-address -- check if the given ip is bounded to the given mac address
+#
+
+use strict;
+
+use esmith::util;
+
+my $mac = shift || die('Invalid MAC argument');
+my $ip = shift || die('Invalid IP argument');
+
+# Redirect ping output to /dev/null
+open(my $oldout, '>&STDOUT') || die('Could not dup STDOUT: $!');
+open(STDOUT, '>', '/dev/null');
+my $reachable = system('/bin/ping', '-w', '2', $ip) == 0;
+open(STDOUT, '>&', $oldout);
+
+if( ! $reachable ) {
+    warn "unreachable\n";
+    exit 0;
+}
+
+my $octet = '[0-9a-fA-F]{2}';
+
+my $bound = (split(/ +/, qx(/sbin/ip neigh show $ip)))[4];
+
+if( $bound =~ m/$octet(:$octet){5}/i && $bound ne $mac ) {
+    warn "valid_ip-mac-address\n";
+    exit 1;
+}
+
+exit 0;
+

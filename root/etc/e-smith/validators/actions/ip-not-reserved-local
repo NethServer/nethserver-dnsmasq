@@ -4,6 +4,7 @@ use strict;
 use esmith::ConfigDB;
 use esmith::util;
 
+my $mac = shift || "";
 my $ip = shift || "";
 exit 1 unless ($ip ne "");
 
