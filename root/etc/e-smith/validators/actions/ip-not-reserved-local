@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-package esmith;
 
 use strict;
 use esmith::ConfigDB;
@@ -10,26 +9,8 @@ exit 1 unless ($ip ne "");
 
 my $db = esmith::ConfigDB->open_ro() or exit 1;
 
-exit (not_in_dhcp_range($ip) || not_taken($ip) || must_be_local($ip));
+exit (not_taken($ip) || must_be_local($ip));
 
-sub not_in_dhcp_range
-{
-    my $address = shift;
-    my $status = $db->get('dnsmasq')->prop('status') || "disabled";
-    return 0 unless $status eq "enabled";
-    my $start = $db->get('dnsmasq')->prop('DhcpRangeStart');
-    my $end = $db->get('dnsmasq')->prop('DhcpRangeEnd');
-    if (esmith::util::IPquadToAddr($start)
-        <= esmith::util::IPquadToAddr($address)
-        &&
-        esmith::util::IPquadToAddr($address)
-        <= esmith::util::IPquadToAddr($end))
-    {
-        print "valid_range\n";
-        return 1; 
-    }
-    return 0;
-}
 
 sub not_taken
 {
