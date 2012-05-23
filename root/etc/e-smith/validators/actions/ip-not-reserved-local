@@ -4,16 +4,12 @@ use strict;
 use esmith::ConfigDB;
 use esmith::util;
 
-my $mac = shift || "";
-my $ip = shift || "";
-exit 1 unless ($ip ne "");
+my $mac = shift || die("Missing MAC argument");
+my $ip = shift || die("Missing IP argument");
 
-my $db = esmith::ConfigDB->open_ro() or exit 1;
+my $db = esmith::ConfigDB->open_ro() or die("Could not open Config DB");
 
-exit (not_taken($ip) || must_be_local($ip));
-
-
-sub not_taken
+sub is_reserved_ip
 {
     my $checkIp = shift;
 
@@ -23,18 +19,15 @@ sub not_taken
 				$db->get_prop('ExternalInterface', 'IPAddress')
     );
     
-    # XXX: we can check if IP is in use. Having MAC address:
-    # ip neigh show $checkIp - Refs #1057
-
-    if ( grep { $checkIp eq $_ } @takenList ) {
-	print "valid_taken\n";
-	return 1;
+    if ( grep { $checkIp eq $_ } @takenList ) 
+    {
+	return 1; # false
     }
 
-    return 0;
+    return 0; # true
 }
 
-sub must_be_local
+sub is_local_ip
 {
     my $localip = shift;
 
@@ -47,10 +40,24 @@ sub must_be_local
         next if $spec eq '127.0.0.1';
         if (Net::IPv4Addr::ipv4_in_network($spec, $localip))
         {
-            return 0;
+            return 1;
         }
     }
     # Not OK. The IP is not on any of our local networks.
-    print "valid_local\n";
-    return 1;
+    return 0;
 }
+
+#
+# Fail, if ip is reserved or is not in local networks
+#
+if(is_reserved_ip($ip)) 
+{
+    exit 3;
+} 
+elsif( ! is_local_ip($ip)) 
+{
+    exit 4;
+}
+
+# Success
+exit 0;
