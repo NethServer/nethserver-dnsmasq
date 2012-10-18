@@ -1,10 +1,14 @@
-# BEGIN dnsmasq reservations
+#
+# 40dnsmasq-reservations 
+#
+
 {
-    #------------------------------------------------------------
-    # Static dhcp Entries
-    #------------------------------------------------------------
     use esmith::HostsDB;
     my $hdb = esmith::HostsDB->open_ro();
+
+    if( ! defined $hdb) {
+	return '# hosts DB is not available';
+    }
 
     foreach $host ($hdb->hosts)
     {
@@ -15,9 +19,12 @@
         next unless ( defined($MACAddress) && ($MACAddress ne ''));
 
         my $Description = $host->prop('Description');
+
         $OUT .= "# $Description\n" if $Description;
         $OUT .= $MACAddress . "\t" . $IPAddress . "\n";
     }
-    undef;      # We need a return value
+
+    return $OUT;
 }
-# END dnsmasq reservations
+
+

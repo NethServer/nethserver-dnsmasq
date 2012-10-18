@@ -4,7 +4,22 @@
 # interface (eg eth0) here.
 # Repeat the line for more than one interface.
 {
-   $OUT.="interface=".$InternalInterface{Name}."\n";
+    use esmith::InterfacesDB;
+    my $ndb = esmith::InterfacesDB->open_ro();
+
+    if( ! $ndb) {
+	my $msg = "Could not open InterfacesDB!";
+	warn $msg;
+	return "# " . $msg;
+    }
+
+    if($ndb->green()) {
+	my $ifName = $ndb->green()->prop('device');
+	$OUT = "interface=" . $ifName;
+    } else {
+	warn "Green interface not found!";
+	$OUT = "# interface=<green interface not found>";
+    }
 }
 
 # Set the domain for dnsmasq. this is optional, but if it is set, it
