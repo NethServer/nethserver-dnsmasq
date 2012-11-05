@@ -33,12 +33,12 @@ class Dhcp extends \Nethgui\Controller\TableController
         $columns = array(
             'Key',
             'Description',
-            'IPAddress',
-            'MACAddress',
+            'IpAddress',
+            'MacAddress',
             'Actions',
         );
 
-        $tableAdapter = $this->getPlatform()->getTableAdapter('hosts', 'host', array('HostType' => "/^Local$/"));
+        $tableAdapter = $this->getPlatform()->getTableAdapter('hosts', 'local');
 
         $this
             ->setTableAdapter($tableAdapter)
@@ -49,8 +49,6 @@ class Dhcp extends \Nethgui\Controller\TableController
             ->addTableAction(new Dhcp\Configure())
             ->addTableAction(new \Nethgui\Controller\Table\Help('Help'))
         ;
-
-        $this->getAction('create')->setCreateDefaults(array('HostType' => 'Local'));
 
         parent::initialize();
     }

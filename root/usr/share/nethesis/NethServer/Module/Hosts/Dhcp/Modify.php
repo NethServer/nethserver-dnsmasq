@@ -34,9 +34,8 @@ class Modify extends \Nethgui\Controller\Table\Modify
         $parameterSchema = array(
             array('hostname', Validate::HOSTNAME_SIMPLE, \Nethgui\Controller\Table\Modify::KEY),
             array('Description', Validate::ANYTHING, \Nethgui\Controller\Table\Modify::FIELD),
-            array('IPAddress', Validate::IPv4, \Nethgui\Controller\Table\Modify::FIELD),
-            array('MACAddress', Validate::MACADDRESS, \Nethgui\Controller\Table\Modify::FIELD),
-            array('HostType', '/^Local$/', \Nethgui\Controller\Table\Modify::FIELD),
+            array('IpAddress', Validate::IPv4, \Nethgui\Controller\Table\Modify::FIELD),
+            array('MacAddress', Validate::MACADDRESS, \Nethgui\Controller\Table\Modify::FIELD),
         );
         
         if($this->getIdentifier() === 'delete') {
@@ -50,8 +49,8 @@ class Modify extends \Nethgui\Controller\Table\Modify
     public function validate(\Nethgui\Controller\ValidationReportInterface $report)
     {
         // Bind the dhcp-reservation platform validator:
-        $this->getValidator('IPAddress')
-            ->platform('dhcp-reservation', $this->parameters['MACAddress']);
+        $this->getValidator('IpAddress')
+            ->platform('dhcp-reservation', $this->parameters['MacAddress']);
 
         parent::validate($report);
     }
