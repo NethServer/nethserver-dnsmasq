@@ -59,3 +59,13 @@ event_templates('nethserver-dnsmasq-save',
 event_services('nethserver-dnsmasq-save',
 	       'dnsmasq' => 'restart');
 
+#--------------------------------------------------
+# actions for interface-update event
+#--------------------------------------------------
+event_templates('interface-update',
+                '/etc/dnsmasq.conf');
+event_templates('interface-update',
+                '/etc/resolv.conf.conf');
+event_services('interface-update',
+	       'dnsmasq' => 'restart');
+
