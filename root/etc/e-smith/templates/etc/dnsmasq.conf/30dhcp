@@ -25,7 +25,7 @@ dhcp-authoritative
     if($dnsmasq{DhcpGatewayIP}) {
 	$router = $dnsmasq{DhcpGatewayIP};
     } else {
-	$router = $InternalInterface{IPAddress};
+	$router = $ndb->green()->prop('gateway') || $ndb->green()->prop('ipaddr');
     }
 
     if ($router) {
