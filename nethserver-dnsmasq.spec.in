@@ -27,6 +27,7 @@ rm -rf $RPM_BUILD_ROOT
 %{genfilelist} \
     $RPM_BUILD_ROOT \
     > %{name}-%{version}-filelist
+echo "%doc COPYING" >> %{name}-%{version}-filelist
 
 %clean
 rm -rf $RPM_BUILD_ROOT
