@@ -4,17 +4,8 @@
 # interface (eg eth0) here.
 # Repeat the line for more than one interface.
 {
-    use esmith::InterfacesDB;
-    my $ndb = esmith::InterfacesDB->open_ro();
-
-    if( ! $ndb) {
-	my $msg = "Could not open InterfacesDB!";
-	warn $msg;
-	return "# " . $msg;
-    }
-
     if($ndb->green()) {
-	my $ifName = $ndb->green()->prop('device');
+	my $ifName = $ndb->green()->prop('device') || 'green';
 	$OUT = "interface=" . $ifName;
     } else {
 	warn "Green interface not found!";
