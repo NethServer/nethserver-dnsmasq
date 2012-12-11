@@ -44,9 +44,7 @@ signal_event %{name}-uninstall
 %defattr(-,root,root,-)
 %doc
 
-%changelog
-* Tue Mar 27 2012 Davide Principi <davide.principi@nethesis.it> - 6.2.0-1.nh
-- Upgraded version number
 
-* Mon Mar 28 2011 Giacomo Sanchietti <giacomo.sanchietti@gmail.com> 0.1.1 - 1.nh
-- First relase
+
+%changelog
+
