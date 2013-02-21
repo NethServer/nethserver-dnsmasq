@@ -20,11 +20,10 @@
 #
 use esmith::Build::CreateLinks  qw(:all);
 
-event_templates($_,
-		'/etc/dnsmasq.conf',
-		'/etc/ethers',
-		'/etc/hosts',
-		'/etc/resolv.conf') foreach (qw(
+event_templates($_, qw(
+		/etc/dnsmasq.conf
+		/etc/resolv.conf
+)) foreach (qw(
   nethserver-dnsmasq-update
   nethserver-dnsmasq-uninstall
 ));
@@ -45,16 +44,16 @@ event_actions('nethserver-dnsmasq-uninstall',
 	      'firewall-adjust' => '40',
 	      'runlevel-adjust' => '50');
 
-
-
-foreach (qw(
+#
+# reload dnsmasq when HostsDB changes:
+#
+event_services($_, qw(
+   dnsmasq reload
+)) foreach (qw(
     host-create 
     host-delete 
     host-modify 
-)) {
-    event_services($_, 
-		   'dnsmasq' => 'reload');
-}
+)); 
 
 #--------------------------------------------------
 # actions for dhcp-reservation validator
