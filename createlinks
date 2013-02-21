@@ -52,10 +52,6 @@ foreach (qw(
     host-delete 
     host-modify 
 )) {
-    event_templates($_,
-		    '/etc/ethers',
-		    '/etc/hosts');
-
     event_services($_, 
 		   'dnsmasq' => 'reload');
 }
