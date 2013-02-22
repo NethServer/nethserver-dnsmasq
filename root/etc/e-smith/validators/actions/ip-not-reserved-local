@@ -22,6 +22,7 @@
 
 use strict;
 use esmith::ConfigDB;
+use esmith::NetworksDB;
 use esmith::util;
 
 my $mac = shift || die("Missing MAC argument");
