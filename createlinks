@@ -80,3 +80,10 @@ event_templates('interface-update',
 event_services('interface-update',
 	       'dnsmasq' => 'restart');
 
+#--------------------------------------------------
+# actions for migration-import event
+#--------------------------------------------------
+
+$event = "migration-import";
+event_actions($event, 'nethserver-dnsmasq-migrate' => 60);
+
