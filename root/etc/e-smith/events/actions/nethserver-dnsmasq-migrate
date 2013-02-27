@@ -29,7 +29,7 @@ my $sourceDir = shift;
 my $esmithDbDir = '/home/e-smith/db';
 my $errors = 0;
 if( ! -d $sourceDir) {
-    die("Could not find $sourceDir");
+    die("Could not find dir $sourceDir");
 }
 
 my $srcConfigDb = esmith::DB::db->open_ro(join('', $sourceDir, $esmithDbDir, '/configuration')) || die("Could not open source configuration database in $sourceDir \n");
@@ -45,6 +45,12 @@ my $end = $dhcpd->prop('end') || '';
 $dstConfigDb->set_prop('dnsmasq', 'DhcpStatus', $status, type => 'service');
 $dstConfigDb->set_prop('dnsmasq', 'DhcpRangeStart', $start, type => 'service');
 $dstConfigDb->set_prop('dnsmasq', 'DhcpRangeEnd', $end, type => 'service');
+
+my $dnscache = $srcConfigDb->get('dnscache');
+my $status = $dnscache->prop('status') || 'disabled';
+my $access = $dnscache->prop('access') || 'private';
+$dstConfigDb->set_prop('dnsmasq', 'status', $status, type => 'service');
+$dstConfigDb->set_prop('dnsmasq', 'access', $access, type => 'service');
 
 #
 # Apply configuration
