@@ -47,4 +47,5 @@ signal_event %{name}-uninstall
 
 
 %changelog
-
+* Tue Mar 19 2013 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.0.1-1
+- Add migration code #1685
