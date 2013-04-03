@@ -23,6 +23,7 @@ use esmith::Build::CreateLinks  qw(:all);
 event_templates($_, qw(
 		/etc/dnsmasq.conf
 		/etc/resolv.conf
+		/etc/ethers
 )) foreach (qw(
   nethserver-dnsmasq-update
   nethserver-dnsmasq-uninstall
