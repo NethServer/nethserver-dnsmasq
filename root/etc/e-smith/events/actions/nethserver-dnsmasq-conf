@@ -43,5 +43,3 @@ if($status eq 'enabled' && $role eq 'none') {
     $DB->set_prop('dns', 'role', 'none');
 }
 
-NethServer::Service::manage_add('nethserver-dnsmasq',
-				'dnsmasq');
