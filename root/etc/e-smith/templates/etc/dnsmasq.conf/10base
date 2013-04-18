@@ -5,7 +5,7 @@
 # Repeat the line for more than one interface.
 {
     if($ndb->green()) {
-	my $ifName = $ndb->green()->prop('device') || 'green';
+        my $ifName = $ndb->green()->key || 'eth0';
 	$OUT = "interface=" . $ifName;
     } else {
 	warn "Green interface not found!";
