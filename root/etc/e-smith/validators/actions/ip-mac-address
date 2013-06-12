@@ -44,7 +44,7 @@ if( ! $reachable ) {
 my $octet = '[0-9a-fA-F]{2}';
 my $bound = (split(/ +/, qx(/sbin/ip neigh show $ip)))[4];
 
-if( $bound =~ m/$octet(:$octet){5}/i && $bound ne $mac ) {
+if( $bound =~ m/$octet(:$octet){5}/i && $bound ne lc($mac) ) {
     exit 1;
 }
 
