@@ -35,10 +35,9 @@ dhcp-authoritative
     }
 }
 
-# Read /etc/ethers for information about hosts for the DHCP server.
-# The format of /etc/ethers is a hardware address, followed by either
-# a hostname or dotted-quad IP address.
-read-ethers
+# Read dhcp reservations from dhcp-hostsfile. 
+# See dhcp-hosts option for more informations.
+dhcp-hostsfile=/etc/dnsmasq-dhcp-hosts
 
 # Whenever a new DHCP lease is created, or an old one destroyed, the
 # executable specified by this option is run.

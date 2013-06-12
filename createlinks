@@ -23,7 +23,7 @@ use esmith::Build::CreateLinks  qw(:all);
 event_templates($_, qw(
 		/etc/dnsmasq.conf
 		/etc/resolv.conf
-		/etc/ethers
+		/etc/dnsmasq-dhcp-hosts
 )) foreach (qw(
   nethserver-dnsmasq-update
 ));
