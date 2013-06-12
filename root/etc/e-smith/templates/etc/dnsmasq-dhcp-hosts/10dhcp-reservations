@@ -6,22 +6,34 @@
     use esmith::HostsDB;
     my $hdb = esmith::HostsDB->open_ro() || return '# hosts DB is not available';
 
+    our %ipmap;
+
     foreach $host ($hdb->get_all_by_prop('type', 'local')) {
         my $IpAddress = $host->prop('IpAddress') || '';
         my $MacAddress = $host->prop('MacAddress') || '';
 
-	if ($IpAddress eq '' || $MacAddress eq '') {
-	    # skip all entries without an IP
-	    next;
-	}
-        
-	my $Description = $host->prop('Description') || "";
-        $OUT .= "# ${Description}\n" if($Description);
+	    if ($IpAddress eq '' || $MacAddress eq '') {
+	        # skip all entries without an IP
+	        next;
+	    }
+        if (! exists($ipmap{$IpAddress})) {
+            $ipmap{$IpAddress} = [];
+        }
+	    my $Description = $host->prop('Description') || "";
+        push(@{$ipmap{$IpAddress}}, {'MacAddress' => lc($MacAddress), 'Description' => $Description, 'Host' => $host->key});
+    }
 
-        $OUT .= sprintf "%-18s,%s\n\n", $MacAddress, $IpAddress;
+    # Allow a single ip for multiple MAC addresses
+    foreach my $ip (keys %ipmap) {
+        my $str = "";
+        foreach $el (@{$ipmap{$ip}}) {
+            $OUT .= "# Host: ".$el->{'Host'}."\n" if($el->{'Host'});
+            $OUT .= "# ".$el->{'Description'}."\n" if($el->{'Description'});
+            $str .= sprintf "%-17s,", $el->{'MacAddress'};
+        }
+        $str .= $ip;
+        $OUT.= "$str\n\n";
     }
 
     return $OUT;
 }
-
-
