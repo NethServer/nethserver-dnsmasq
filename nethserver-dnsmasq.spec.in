@@ -43,6 +43,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 12 2013 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.0.3-1.ns6
+- Use dhcp-host option for fixed leases #1917
+- ip-mac-address validator is now case insensitive #1923
+
 * Tue Apr 30 2013 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.0.2-1.ns6
 - Rebuild for automatic package handling. #1870
 - Expand /etc/ethers template #1830
