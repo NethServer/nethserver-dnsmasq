@@ -38,15 +38,21 @@ event_services('nethserver-dnsmasq-update',
 	       'dnsmasq' => 'restart');
 
 #
-# reload dnsmasq when HostsDB changes:
+# Reload config whenever HostsDB changes
 #
-event_services($_, qw(
-   dnsmasq reload
-)) foreach (qw(
+foreach (qw(
     host-create 
     host-delete 
     host-modify 
-)); 
+)) {
+    event_services($_, qw(
+       dnsmasq reload
+    ));
+    event_templates($_, qw(
+       /etc/dnsmasq-dhcp-hosts
+    ));
+}
+
 
 #--------------------------------------------------
 # actions for dhcp-reservation validator
