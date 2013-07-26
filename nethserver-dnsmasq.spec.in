@@ -43,6 +43,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 26 2013 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.0.5-1.ns6
+- Apply DNS changes from web UI #2052
+
 * Tue Jul 16 2013 Davide Principi <davide.principi@nethesis.it> - 1.0.4-1.ns6
 - Use dhcp-host dnsmasq option for fixed leases - Enhancement #1917 [NethServer]
 
