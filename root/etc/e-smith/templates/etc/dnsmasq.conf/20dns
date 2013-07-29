@@ -1,3 +1,7 @@
+#
+# 20dns
+#
+
 # Never forward plain names (without a dot or domain part)
 domain-needed
 
@@ -6,3 +10,5 @@ bogus-priv
 
 # Domain is automatically added to simple names in a hosts-file.
 expand-hosts
+
+

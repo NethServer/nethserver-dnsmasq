@@ -1,3 +1,6 @@
+#
+# 30dhcp
+#
 
 # Enable the DHCP server. Addresses will be given out from the range
 # <start-addr> to <end-addr> and from statically defined addresses
@@ -42,4 +45,5 @@ dhcp-hostsfile=/etc/dnsmasq-dhcp-hosts
 # Whenever a new DHCP lease is created, or an old one destroyed, the
 # executable specified by this option is run.
 dhcp-script=/usr/libexec/nethserver/dnsmasq-leasestatus
+
 

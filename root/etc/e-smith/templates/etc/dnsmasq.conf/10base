@@ -1,3 +1,6 @@
+#
+# 10base
+#
 
 # If you want dnsmasq to listen for DHCP and DNS requests only on
 # specified interfaces (and the loopback) give the name of the
@@ -23,3 +26,4 @@
 {
    $OUT.="domain=".$DomainName."\n";
 }
+
