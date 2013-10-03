@@ -1,5 +1,9 @@
 {
-    if($dns{role} eq 'resolver') {
+    #
+    # 40dnsRoleResolver
+    #
+    $OUT = '';
+    if($dns{'role'} eq 'resolver') {
 	$OUT .= "# dnsmasq is enabled on this machine:\n";
 	$OUT .= "nameserver 127.0.0.1\n";
     }
