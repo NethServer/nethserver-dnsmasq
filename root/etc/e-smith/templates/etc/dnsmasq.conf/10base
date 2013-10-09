@@ -2,20 +2,6 @@
 # 10base
 #
 
-# If you want dnsmasq to listen for DHCP and DNS requests only on
-# specified interfaces (and the loopback) give the name of the
-# interface (eg eth0) here.
-# Repeat the line for more than one interface.
-{
-    if($ndb->green()) {
-        my $ifName = $ndb->green()->key || 'eth0';
-	$OUT = "interface=" . $ifName;
-    } else {
-	warn "Green interface not found!";
-	$OUT = "# interface=<green interface not found>";
-    }
-}
-
 # Set the domain for dnsmasq. this is optional, but if it is set, it
 # does the following things.
 # 1) Allows DHCP hosts to have fully qualified domain names, as long
@@ -23,7 +9,6 @@
 # 2) Sets the "domain" DHCP option thereby potentially setting the
 #    domain of all systems configured by DHCP
 # 3) Provides the domain part for "expand-hosts" 
-{
-   $OUT.="domain=".$DomainName."\n";
-}
+domain={ $DomainName }
+
 
