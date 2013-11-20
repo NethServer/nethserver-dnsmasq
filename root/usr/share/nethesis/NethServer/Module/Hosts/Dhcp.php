@@ -20,7 +20,7 @@ namespace NethServer\Module\Hosts;
  * along with NethServer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Nethgui\System\PlatformInterface as Validate;
+use \Nethgui\System\PlatformInterface as Validate;
 
 /**
  * Implement gui module for /etc/hosts configuration
@@ -38,28 +38,52 @@ class Dhcp extends \Nethgui\Controller\TableController
             'Actions',
         );
 
-        $tableAdapter = $this->getPlatform()->getTableAdapter('hosts', 'local');
+        $tableAdapter = new Dhcp\DhcpAdapter($this->getPlatform());
+
+        $parameterSchema = array(
+            array('hostname', Validate::HOSTNAME_SIMPLE, \Nethgui\Controller\Table\Modify::KEY),
+            array('Description', Validate::ANYTHING, \Nethgui\Controller\Table\Modify::FIELD),
+            array('IpAddress', Validate::IPv4, \Nethgui\Controller\Table\Modify::FIELD),
+            array('MacAddress', Validate::MACADDRESS, \Nethgui\Controller\Table\Modify::FIELD),
+        );
 
         $this
             ->setTableAdapter($tableAdapter)
             ->setColumns($columns)
+            ->addRowAction(new Dhcp\Reserve())
             ->addRowAction(new Dhcp\Modify('update'))
-            ->addRowAction(new Dhcp\Modify('delete')) 
+            ->addRowAction(new Dhcp\Modify('delete'))
             ->addTableAction(new Dhcp\Modify('create'))
             ->addTableAction(new Dhcp\Configure())
             ->addTableAction(new \Nethgui\Controller\Table\Help('Help'))
         ;
 
+        $self = $this;
+
+        array_map(function ($id) use ($parameterSchema, $self) {
+            $self->getAction($id)->setSchema($parameterSchema);
+        }, array('create', 'delete', 'Reserve', 'update'));
+
         parent::initialize();
     }
 
-    public function onParametersSaved(\Nethgui\Module\ModuleInterface $currentAction, $changes, $parameters)
+    public function prepareViewForColumnActions(\Nethgui\Controller\Table\Read $action, \Nethgui\View\ViewInterface $view, $key, $values, &$rowMetadata)
     {
-        $actionName = $currentAction->getIdentifier();
-        if ($actionName === 'update') {
-            $actionName = 'modify';
+        $cellView = $action->prepareViewForColumnActions($view, $key, $values, $rowMetadata);
+
+        if ( ! isset($values['LeaseStatus']) || $values['LeaseStatus'] & 0x2) {
+            unset($cellView['Reserve']);
+        } else {
+            unset($cellView['update']);
+            unset($cellView['delete']);
+            $rowMetadata['rowCssClass'] .= ' free';
         }
-        $this->getPlatform()->signalEvent(sprintf('host-%s@post-process', $actionName));
+
+        if ( ! isset($values['LeaseStatus']) || ! ($values['LeaseStatus'] & 0x1)) {
+            $rowMetadata['rowCssClass'] .= ' expired padicon';
+        }
+
+        return $cellView;
     }
 
 }

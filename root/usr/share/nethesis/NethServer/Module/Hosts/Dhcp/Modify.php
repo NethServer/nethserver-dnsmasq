@@ -20,8 +20,6 @@ namespace NethServer\Module\Hosts\Dhcp;
  * along with NethServer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Nethgui\System\PlatformInterface as Validate;
-
 /**
  * Implement gui module for /etc/hosts configuration
  */
@@ -29,21 +27,12 @@ class Modify extends \Nethgui\Controller\Table\Modify
 {
 
     public function initialize()
-    {
-
-        $parameterSchema = array(
-            array('hostname', Validate::HOSTNAME_SIMPLE, \Nethgui\Controller\Table\Modify::KEY),
-            array('Description', Validate::ANYTHING, \Nethgui\Controller\Table\Modify::FIELD),
-            array('IpAddress', Validate::IPv4, \Nethgui\Controller\Table\Modify::FIELD),
-            array('MacAddress', Validate::MACADDRESS, \Nethgui\Controller\Table\Modify::FIELD),
-        );
-        
+    {        
         if($this->getIdentifier() === 'delete') {
             $this->setViewTemplate('Nethgui\Template\Table\Delete');
         } else {
-            $this->setViewTemplate('NethServer\Template\Hosts\Dhcp');
-        }
-        $this->setSchema($parameterSchema);
+            $this->setViewTemplate('NethServer\Template\Hosts\Dhcp\Modify');
+        }        
     }
 
     public function validate(\Nethgui\Controller\ValidationReportInterface $report)
@@ -53,6 +42,16 @@ class Modify extends \Nethgui\Controller\Table\Modify
             ->platform('dhcp-reservation', $this->parameters['MacAddress']);
 
         parent::validate($report);
+    }
+
+
+    public function onParametersSaved($changes)
+    {
+        $actionName = $this->getIdentifier();
+        if ($actionName === 'update') {
+            $actionName = 'modify';
+        }
+        $this->getPlatform()->signalEvent(sprintf('host-%s@post-process', $actionName), array($this->parameters['hostname']));
     }
 
 }
