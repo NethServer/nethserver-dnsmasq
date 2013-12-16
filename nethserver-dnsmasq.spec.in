@@ -43,6 +43,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec 16 2013 Davide Principi <davide.principi@nethesis.it> - 1.1.0-1.ns6
+- Fill DHCP reservation form from lease cache - Feature #1949 [NethServer]
+- Display current lease status - Feature #1048 [NethServer]
+
 * Tue Oct 22 2013 Davide Principi <davide.principi@nethesis.it> - 1.0.6-1.ns6
 - VPN: support IPsec/L2TP - Feature #1957 [NethServer]
 
