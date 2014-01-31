@@ -19,6 +19,7 @@ Provides DNS and DHCP services on the local network
 %setup
 
 %build
+%{makedocs}
 perl createlinks
 
 %install
