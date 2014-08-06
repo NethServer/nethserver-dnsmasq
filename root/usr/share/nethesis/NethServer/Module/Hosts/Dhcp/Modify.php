@@ -38,12 +38,18 @@ class Modify extends \Nethgui\Controller\Table\Modify
     public function validate(\Nethgui\Controller\ValidationReportInterface $report)
     {
         // Bind the dhcp-reservation platform validator:
-        $this->getValidator('IpAddress')
-            ->platform('dhcp-reservation', $this->parameters['MacAddress']);
-
+        if ($this->getRequest()->isMutation()) {
+            $this->getValidator('IpAddress')
+                ->platform('dhcp-reservation', $this->parameters['MacAddress']);
+        }
+        if ($this->getIdentifier() === 'delete') {
+            $v = $this->createValidator()->platform('host-delete');
+            if ( ! $v->evaluate($this->parameters['hostname'])) {
+                $report->addValidationError($this, 'Key', $v);
+            }
+        }
         parent::validate($report);
     }
-
 
     public function onParametersSaved($changes)
     {

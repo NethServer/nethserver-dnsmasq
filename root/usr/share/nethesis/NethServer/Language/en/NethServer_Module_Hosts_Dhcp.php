@@ -11,4 +11,6 @@ $L['Reserve_label'] = 'Reserve IP';
 $L['create_label'] = 'Create IP reservation';
 $L['valid_platform,dhcp-reservation,ip-mac-address,1'] = 'Conflicts with another machine'; 
 $L['valid_platform,dhcp-reservation,ip-not-reserved-local,3'] = 'Already assigned'; 
-$L['valid_platform,dhcp-reservation,ip-not-reserved-local,4'] = 'Not in local networks'; 
+$L['valid_platform,dhcp-reservation,ip-not-reserved-local,4'] = 'Not in local networks';
+$L['valid_platform,fwobject-host-delete,fwobject-referenced,3'] = 'Could not delete ${2}. The host is used by firewall rules.';
+
