@@ -57,7 +57,7 @@ class Reserve extends \Nethgui\Controller\Table\RowAbstractAction
             $this->getAdapter()->offsetUnset('FORCE');
 
             if ($this->saveParameters()) {
-                $this->getPlatform()->signalEvent('host-create@post-process', array(
+                $this->getPlatform()->signalEvent('host-create &', array(
                     $this->parameters['hostname']));
             }
         }

@@ -51,7 +51,7 @@ class Modify extends \Nethgui\Controller\Table\Modify
         if ($actionName === 'update') {
             $actionName = 'modify';
         }
-        $this->getPlatform()->signalEvent(sprintf('host-%s@post-process', $actionName), array($this->parameters['hostname']));
+        $this->getPlatform()->signalEvent(sprintf('host-%s &', $actionName), array($this->parameters['hostname']));
     }
 
 }
