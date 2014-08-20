@@ -44,6 +44,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 20 2014 Davide Principi <davide.principi@nethesis.it> - 1.1.2-1.ns6
+- Firewall rules: preserve references to other DB records - Enhancement #2835 [NethServer]
+
 * Wed Feb 05 2014 Davide Principi <davide.principi@nethesis.it> - 1.1.1-1.ns6
 - Show text labels in DNS & DHCP - Enhancement #2642 [NethServer]
 - RST format for help files - Enhancement #2627 [NethServer]
