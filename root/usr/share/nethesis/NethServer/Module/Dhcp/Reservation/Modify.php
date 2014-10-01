@@ -1,5 +1,5 @@
 <?php
-namespace NethServer\Module\Hosts\Dhcp;
+namespace NethServer\Module\Dhcp\Reservation;
 
 /*
  * Copyright (C) 2011 Nethesis S.r.l.
@@ -31,7 +31,7 @@ class Modify extends \Nethgui\Controller\Table\Modify
         if($this->getIdentifier() === 'delete') {
             $this->setViewTemplate('Nethgui\Template\Table\Delete');
         } else {
-            $this->setViewTemplate('NethServer\Template\Hosts\Dhcp\Modify');
+            $this->setViewTemplate('NethServer\Template\Dhcp\Modify');
         }        
     }
 

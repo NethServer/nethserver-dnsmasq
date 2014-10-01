@@ -1,5 +1,5 @@
 <?php
-namespace NethServer\Module\Hosts\Dhcp;
+namespace NethServer\Module\Dhcp\Reservation;
 
 /*
  * Copyright (C) 2013 Nethesis S.r.l.
