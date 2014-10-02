@@ -13,9 +13,9 @@ echo $view->header('hostname')->setAttribute('template', $headerTemplate);
 
 echo $view->panel()
     ->insert($view->textInput('hostname', ($view->getModule()->getIdentifier() == 'update' ? $view::STATE_READONLY : 0)))
-    ->insert($view->textInput('Description'))
     ->insert($view->textInput('MacAddress')->setAttribute('placeholder', '00:00:00:00:00:00'))
-    ->insert($view->textInput('IpAddress'));
+    ->insert($view->textInput('IpAddress'))
+    ->insert($view->textInput('Description'));
 
 echo $view->buttonList($view::BUTTON_SUBMIT | $view::BUTTON_CANCEL);
 

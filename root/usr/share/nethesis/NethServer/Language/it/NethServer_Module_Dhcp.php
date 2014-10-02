@@ -19,4 +19,4 @@ $L['valid_platform,dhcp-reservation,ip-mac-address,1'] = 'In uso su un\'altra ma
 $L['valid_platform,dhcp-reservation,ip-not-reserved-local,3'] = 'Già assegnato';
 $L['valid_platform,dhcp-reservation,ip-not-reserved-local,4'] = 'Non è nelle reti locali';
 $L['valid_platform,fwobject-host-delete,fwobject-referenced,3'] = 'Could not delete ${2}. The host is used by firewall rules.';
-
+$L['valid_platform,dhcp-reservation,mac-not-reserved,1'] = 'Indirizzo MAC già assegnato';

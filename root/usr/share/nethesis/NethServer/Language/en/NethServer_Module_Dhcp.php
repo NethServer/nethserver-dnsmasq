@@ -14,6 +14,7 @@ $L['valid_platform,dhcp-reservation,ip-mac-address,1'] = 'Conflicts with another
 $L['valid_platform,dhcp-reservation,ip-not-reserved-local,3'] = 'Already assigned'; 
 $L['valid_platform,dhcp-reservation,ip-not-reserved-local,4'] = 'Not in local networks';
 $L['valid_platform,fwobject-host-delete,fwobject-referenced,3'] = 'Could not delete ${2}. The host is used by firewall rules.';
+$L['valid_platform,dhcp-reservation,mac-not-reserved,1'] = 'MAC address already assigned';
 $L['Description_label'] = 'Description'; 
 $L['IpAddress_label'] = 'IP address'; 
 $L['Key_label'] = 'Interface'; 

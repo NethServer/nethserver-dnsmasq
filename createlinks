@@ -61,6 +61,7 @@ foreach (qw(
 validator_actions('dhcp-reservation',
 		  'ip-not-reserved-local' => '20',
 		  'ip-mac-address' => '30',
+		  'mac-not-reserved' => '40',
     );
 
 
