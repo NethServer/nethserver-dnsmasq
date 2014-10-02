@@ -1,13 +1,12 @@
-.. --initial-header-level=2
-
+====
 DHCP
 ====
 
 The DHCP (Dynamic Host Configuration Protocol) allows you to assign IP
 addresses to clients on the local network
 
-Configure
----------
+Server
+======
 
 Configure the DHCP server.
 
@@ -20,13 +19,16 @@ Enabled
     The server will issue IP addresses to computers on the local
     network (recommended).
 
-Start
+Range start
     The first IP address in the range assigned to the clients on the
     LAN.
 
-End
+Range end
     The last IP address of the range, addresses between Start and End
     will ge assigned to clients.
+
+Reservation
+===========
 
 Create / Modify
 ---------------

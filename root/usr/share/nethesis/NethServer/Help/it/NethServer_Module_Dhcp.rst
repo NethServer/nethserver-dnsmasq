@@ -1,5 +1,4 @@
-.. --initial-header-level=2
-
+====
 DHCP
 ====
 
@@ -7,9 +6,8 @@ Il server DHCP (Dynamic Host Configuration Protocol) permette di
 assegnare indirizzi IP ai client della rete locale in maniera
 automatica.
 
-
-Configura
----------
+Server
+======
 
 Configura il server DHCP.
 
@@ -23,12 +21,16 @@ Abilitato
     Il server rilascerà indirizzi IP ai computer della rete locale
     (opzione consigliata).
 
-Inizio
+Inizio intervallo
     Il primo indirizzo IP del range assegnabile ai client della LAN.
 
-Fine
+Fine intervallo
     L'ultimo IP del range, verranno assegnati indirizzi compresi tra
     Inizio e Fine.
+
+
+Riserva IP
+==========
 
 Crea / Modifica
 ---------------
