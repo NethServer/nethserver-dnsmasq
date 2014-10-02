@@ -5,17 +5,28 @@ echo $view->header()->setAttribute('template',$T('dns_dhcp_title'));
 echo "<dl>";
 echo "<dt>".$T('dns_status_label')."</dt><dd>"; echo $T('enabled'); echo "</dd>";
 echo "<dt>".$T('nameservers_label')."</dt><dd>"; echo $T($view['dns_servers']); echo "</dd>";
-echo "<dt class='spacer'>".$T('dhcp_status_label')."</dt><dd class='spacer'>"; echo $T($view['dhcp_status']); echo "</dd>";
-if ($view['dhcp_status'] == 'enabled') {
-    echo "<dt>".$T('dhcp_start_label')."</dt><dd>"; echo $T($view['dhcp_start']); echo "</dd>";
-    echo "<dt>".$T('dhcp_end_label')."</dt><dd>"; echo $T($view['dhcp_end']); echo "</dd>";
-}
+echo "<dt class='spacer'>".$T('dhcp_status_label')."</dt><dd class='spacer'>";  echo "</dd>";
 echo "</dl>";
+echo "<ul style='clear: both'>";
+foreach ($view['dhcp'] as $i => $props) {
+    $status = $props['status'];
+    if ($status == 'disabled') {
+        echo "<li><span class='dhcp-bold'>$i</span>: ".$T('disabled')."</li>";
+    } else {
+        echo "<li><span class='dhcp-bold'>$i</span>: ".$props['start']." - ".$props['end']."</li>";
+    }
+}
+echo "</ul>";
 echo "</div>";
 
 $view->includeCss("
     .dashboard-item .spacer {
         margin-top: 8px;
+    }
+
+    .dashboard-item .dhcp-bold {
+        font-weight: bold;
+        padding-left: 5px;
     }
 ");
 

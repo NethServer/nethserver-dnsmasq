@@ -46,10 +46,11 @@ class Dnsmasq extends \Nethgui\Controller\AbstractController
     private function readDHCP()
     {
         $dhcp = array();
-        $k = $this->getPlatform()->getDatabase('configuration')->getKey('dnsmasq');
-        $dhcp['start'] = $k['DhcpRangeStart'];
-        $dhcp['end'] = $k['DhcpRangeEnd'];
-        $dhcp['status'] = $k['DhcpStatus'];
+        foreach($this->getPlatform()->getDatabase('dhcp')->getAll('range') as $i => $k) {
+            $dhcp[$i]['start'] = $k['DhcpRangeStart'];
+            $dhcp[$i]['end'] = $k['DhcpRangeEnd'];
+            $dhcp[$i]['status'] = $k['status'];
+        }
 
         return $dhcp;
     }
@@ -69,9 +70,7 @@ class Dnsmasq extends \Nethgui\Controller\AbstractController
         if (!$this->dhcp) {
             $this->dhcp = $this->readDHCP();
         }
-        foreach ($this->dhcp as $k => $v) {
-            $view['dhcp_' . $k] = $v;
-        }
+        $view['dhcp'] = $this->dhcp;
         foreach ($this->dns as $k => $v) {
             $view['dns_' . $k] = $v;
         }
