@@ -33,7 +33,26 @@ class Dhcp extends \Nethgui\Controller\TabsController
     public function initialize()
     {
         parent::initialize();
-        $this->loadChildrenDirectory();
+        $this->addChild(new \NethServer\Module\Dhcp\Configure());
+        $this->addChild(new \NethServer\Module\Dhcp\Reservation());
+    }
+
+    public function prepareView(\Nethgui\View\ViewInterface $view)
+    {
+        $isConfigured = 0 !== count(array_filter($this->getPlatform()->getDatabase('dhcp')->getAll('range'), function ($record) {
+                    return $record['status'] === 'enabled';
+                }));
+
+        if ($isConfigured) {
+            $this->sortChildren(function (\Nethgui\Module\ModuleInterface $a, \Nethgui\Module\ModuleInterface $b) {
+                if ($a->getIdentifier() === 'Reservation') {
+                    return -1;
+                }
+                return 0;
+            });
+        }
+
+        parent::prepareView($view);
     }
 
 }

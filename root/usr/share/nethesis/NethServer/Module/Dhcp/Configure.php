@@ -1,8 +1,9 @@
 <?php
+
 namespace NethServer\Module\Dhcp;
 
 /*
- * Copyright (C) 2011 Nethesis S.r.l.
+ * Copyright (C) 2014 Nethesis S.r.l.
  * 
  * This script is part of NethServer.
  * 
@@ -22,43 +23,170 @@ namespace NethServer\Module\Dhcp;
 
 use \Nethgui\System\PlatformInterface as Validate;
 
-/**
- * Implement gui module for /etc/hosts configuration
- */
-class Configure extends \Nethgui\Controller\TableController
+class Configure extends \Nethgui\Controller\AbstractController
 {
 
     public function initialize()
     {
-        $columns = array(
-            'Key',
-            'DhcpRangeStart',
-            'DhcpRangeEnd',
-        );
-
-
-        $parameterSchema = array(
-            array('interface', Validate::ANYTHING, \Nethgui\Controller\Table\Modify::KEY),
-            array('DhcpRangeStart', Validate::IPv4, \Nethgui\Controller\Table\Modify::FIELD),
-            array('DhcpRangeEnd', Validate::IPv4, \Nethgui\Controller\Table\Modify::FIELD),
-        );
-
-        $this
-            ->setTableAdapter($this->getPlatform()->getTableAdapter('dhcp', 'range'))
-            ->setColumns($columns)
-            ->addTableAction(new \Nethgui\Controller\Table\Help('Help'))
-        ;
-
         parent::initialize();
+        $this->tableAdapter = $this->getPlatform()->getTableAdapter('dhcp', 'range');
     }
 
-    public function prepareViewForColumnKey(\Nethgui\Controller\Table\Read $action, \Nethgui\View\ViewInterface $view, $key, $values, &$rowMetadata)
+    private function getDataSource()
     {
-        if (!isset($values['status']) || ($values['status'] == 'disabled')) {
-            $rowMetadata['rowCssClass'] = trim($rowMetadata['rowCssClass'] . ' user-locked');
+        static $dataSource;
+        if (isset($dataSource)) {
+            return $dataSource;
+        }
+        $dataSource = new \ArrayObject();
+
+        foreach ($this->tableAdapter as $key => $record) {
+            $dataSource[$key] = new \Nethgui\Adapter\RecordAdapter($this->tableAdapter);
+            $dataSource[$key]->setKeyValue($key);
         }
 
-        return strval($key);
+        return $dataSource;
+    }
+
+    public function bind(\Nethgui\Controller\RequestInterface $request)
+    {
+        parent::bind($request);
+        if ($request->isMutation()) {
+            $dataSource = $this->getDataSource();
+            foreach ($request->getParameter('interfaces') as $key => $props) {
+                if (isset($dataSource[$key])) {
+                    $dataSource[$key]->set($props);
+                } else {
+                    $dataSource[$key] = new \Nethgui\Adapter\RecordAdapter($this->tableAdapter);
+                    $dataSource[$key]->setKeyValue($key)->set($props);
+                }
+            }
+        }
+    }
+
+    public function validate(\Nethgui\Controller\ValidationReportInterface $report)
+    {
+        parent::validate($report);
+
+        $submittedInterfaces = array_keys($this->getRequest()->getParameter('interfaces'));
+        $existingInterfaces = array_keys($this->getNetworkInterfaces());
+
+        if (count($submittedInterfaces) !== count(\array_intersect($existingInterfaces, $submittedInterfaces))) {
+            $report->addValidationErrorMessage($this, 'interfaces', 'valid_interface_existing');
+        }
+
+        $statusValidator = $this->createValidator(Validate::SERVICESTATUS);
+        $ipValidator = $this->createValidator()->ipV4Address();
+
+        $interfaces = $this->getNetworkInterfaces();
+        foreach ($this->getRequest()->getParameter('interfaces') as $key => $record) {
+
+            $fakeModule = $this->getFakeModule('interfaces_' . $key);
+
+            if ( ! $statusValidator->evaluate($record['status'])) {
+                $report->addValidationError($fakeModule, 'status', $statusValidator);
+                continue;
+            }
+            if ($record['status'] !== 'enabled') {
+                continue; /* skip range validation if DHCP is disabled */
+            }
+            if ($ipValidator->evaluate($record['DhcpRangeStart'])) {
+                if (ip2long($record['DhcpRangeStart']) < ip2long($this->getDefaultRange('start', $key, $interfaces[$key]))) {
+                    $report->addValidationErrorMessage($fakeModule, 'DhcpRangeStart', 'valid_iprange_outofbounds');
+                }
+            } else {
+                $report->addValidationError($fakeModule, 'DhcpRangeStart', $ipValidator);
+            }
+            if ($ipValidator->evaluate($record['DhcpRangeEnd'])) {
+                if (ip2long($record['DhcpRangeEnd']) > ip2long($this->getDefaultRange('end', $key, $interfaces[$key]))) {
+                    $report->addValidationErrorMessage($fakeModule, 'DhcpRangeEnd', 'valid_iprange_outofbounds');
+                }
+            } else {
+                $report->addValidationError($fakeModule, 'DhcpRangeEnd', $ipValidator);
+            }
+        }
+    }
+
+    private function getFakeModule($identifier)
+    {
+        $className = 'fakeModule_' . md5($identifier);
+        eval("class $className extends \Nethgui\Module\AbstractModule {}");
+        $m = new $className($identifier);
+        $m->setParent($this);
+        return $m;
+    }
+
+    private function getNetworkInterfaces()
+    {
+        static $interfaces;
+
+        if (isset($interfaces)) {
+            return $interfaces;
+        }
+
+        $interfaces = array_filter($this->getPlatform()->getDatabase('networks')->getAll(), function ($record) {
+            if ( ! in_array($record['type'], array('ethernet', 'bridge', 'bond'))) {
+                return FALSE;
+            }
+            if ( ! in_array($record['role'], array('green', 'blue'))) {
+                return FALSE;
+            }
+            return TRUE;
+        });
+
+        return $interfaces;
+    }
+
+    private function getDefaultRange($type, $key, $props)
+    {
+        $ipaddr = ip2long($props['ipaddr']);
+        $netmask = ip2long($props['netmask']);
+
+        if ( ! ($ipaddr && $netmask)) {
+            return '';
+        }
+
+        if ($type === 'start') {
+            return long2ip($ipaddr & $netmask);
+        } elseif ($type === 'end') {
+            return long2ip(($ipaddr | ~$netmask) & ~1);
+        }
+
+        return '';
+    }
+
+    public function process()
+    {
+        parent::process();
+        if ($this->getRequest()->isMutation()) {
+            foreach ($this->getDataSource() as $record) {
+                $record->save();
+            }
+            $changes = $this->tableAdapter->save();
+            if ($changes) {
+                $this->getPlatform()->signalEvent('nethserver-dnsmasq-save');
+            }
+        }
+    }
+
+    public function prepareView(\Nethgui\View\ViewInterface $view)
+    {
+        parent::prepareView($view);
+        $interfaces = $this->getNetworkInterfaces();
+        $dataSource = $this->getDataSource();
+        $ds = array();
+        foreach ($interfaces as $key => $props) {
+            $record = isset($dataSource[$key]) ? \iterator_to_array($dataSource[$key]) : array();
+            $ds[] = array(
+                'id' => $key,
+                'name' => $key . ' - ' . $props['role'],
+                'status' => isset($record['status']) ? $record['status'] : 'disabled',
+                'DhcpRangeStart' => isset($record['DhcpRangeStart']) ? $record['DhcpRangeStart'] : $this->getDefaultRange('start', $key, $props),
+                'DhcpRangeEnd' => isset($record['DhcpRangeEnd']) ? $record['DhcpRangeEnd'] : $this->getDefaultRange('end', $key, $props),
+            );
+        }
+
+        $view['interfaces'] = $ds;
     }
 
 }

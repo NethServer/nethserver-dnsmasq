@@ -1,12 +1,19 @@
 <?php
+/* @var $view \Nethgui\Renderer\Xhtml */
 
 echo $view->header()->setAttribute('template', $T('Dhcp_Configure_header'));
 
-echo $view->radioButton('DhcpStatus', 'disabled')->setAttribute('label', $T('status_disabled_label'));
+echo $view->objectsCollection('interfaces')
+    ->setAttribute('template', function ($view) use ($T) {
+        return $view->fieldsetSwitch('status', 'enabled', $view::FIELDSETSWITCH_CHECKBOX | $view::FIELDSETSWITCH_EXPANDABLE)
+            ->setAttribute('uncheckedValue', 'disabled')
+            ->setAttribute('labelSource', 'name')
+            ->setAttribute('label', '${0}')
+            ->insert($view->columns()
+                ->insert($view->textInput('DhcpRangeStart')->setAttribute('label', $T('DhcpRangeStart_label')))
+                ->insert($view->textInput('DhcpRangeEnd')))
+        ;
+    })
+    ->setAttribute('key', 'id');
 
-echo $view->fieldsetSwitch('DhcpStatus', 'enabled')->setAttribute('label', $T('status_enabled_label'))
-    ->insert($view->textInput('DhcpRangeStart'))
-    ->insert($view->textInput('DhcpRangeEnd'))
-    ;
-
-echo $view->buttonList($view::BUTTON_SUBMIT | $view::BUTTON_CANCEL);
+echo $view->buttonList($view::BUTTON_SUBMIT | $view::BUTTON_HELP);
