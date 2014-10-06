@@ -1,5 +1,5 @@
 <?php
-namespace NethServer\Module\Hosts\Dhcp;
+namespace NethServer\Module\Dhcp\Reservation;
 
 /*
  * Copyright (C) 2013 Nethesis S.r.l.
@@ -65,7 +65,7 @@ class Reserve extends \Nethgui\Controller\Table\RowAbstractAction
 
     public function prepareView(\Nethgui\View\ViewInterface $view)
     {
-        $view->setTemplate('NethServer\Template\Hosts\Dhcp\Modify');
+        $view->setTemplate('NethServer\Template\Dhcp\Modify');
         parent::prepareView($view);
     }
 

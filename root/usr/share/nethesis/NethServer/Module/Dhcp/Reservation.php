@@ -1,5 +1,5 @@
 <?php
-namespace NethServer\Module\Hosts;
+namespace NethServer\Module\Dhcp;
 
 /*
  * Copyright (C) 2011 Nethesis S.r.l.
@@ -23,9 +23,9 @@ namespace NethServer\Module\Hosts;
 use \Nethgui\System\PlatformInterface as Validate;
 
 /**
- * Implement gui module for /etc/hosts configuration
+ * Implement gui module for DHCP configuration
  */
-class Dhcp extends \Nethgui\Controller\TableController
+class Reservation extends \Nethgui\Controller\TableController
 {
 
     public function initialize()
@@ -35,10 +35,10 @@ class Dhcp extends \Nethgui\Controller\TableController
             'Description',
             'IpAddress',
             'MacAddress',
-            'Actions',
+            'Actions'
         );
 
-        $tableAdapter = new Dhcp\DhcpAdapter($this->getPlatform());
+        $tableAdapter = new Reservation\DhcpAdapter($this->getPlatform());
 
         $parameterSchema = array(
             array('hostname', Validate::HOSTNAME_SIMPLE, \Nethgui\Controller\Table\Modify::KEY),
@@ -50,11 +50,10 @@ class Dhcp extends \Nethgui\Controller\TableController
         $this
             ->setTableAdapter($tableAdapter)
             ->setColumns($columns)
-            ->addRowAction(new Dhcp\Reserve())
-            ->addRowAction(new Dhcp\Modify('update'))
-            ->addRowAction(new Dhcp\Modify('delete'))
-            ->addTableAction(new Dhcp\Modify('create'))
-            ->addTableAction(new Dhcp\Configure())
+            ->addRowAction(new Reservation\Reserve())
+            ->addRowAction(new Reservation\Modify('update'))
+            ->addRowAction(new Reservation\Modify('delete'))
+            ->addTableAction(new Reservation\Modify('create'))
             ->addTableAction(new \Nethgui\Controller\Table\Help('Help'))
         ;
 

@@ -61,6 +61,7 @@ foreach (qw(
 validator_actions('dhcp-reservation',
 		  'ip-not-reserved-local' => '20',
 		  'ip-mac-address' => '30',
+		  'mac-not-reserved' => '40',
     );
 
 
@@ -73,6 +74,10 @@ event_templates('nethserver-dnsmasq-save', qw(
 ));
 event_services('nethserver-dnsmasq-save',
 	       'dnsmasq' => 'restart');
+
+event_actions('nethserver-dnsmasq-save',
+              'dhcp-range-cleanup' => '02',
+);
 
 #--------------------------------------------------
 # nethserver-hosts-save event
@@ -91,6 +96,9 @@ event_templates('interface-update',
                 '/etc/dnsmasq.conf');
 event_services('interface-update',
 	       'dnsmasq' => 'restart');
+event_actions('interface-update',
+              'dhcp-range-cleanup' => '02',
+);
 
 #--------------------------------------------------
 # actions for migration-import event
