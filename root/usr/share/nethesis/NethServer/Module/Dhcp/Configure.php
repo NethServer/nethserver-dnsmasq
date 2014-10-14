@@ -147,7 +147,7 @@ class Configure extends \Nethgui\Controller\AbstractController
         }
 
         if ($type === 'start') {
-            return long2ip($ipaddr & $netmask);
+            return long2ip(($ipaddr & $netmask) | 1);
         } elseif ($type === 'end') {
             return long2ip(($ipaddr | ~$netmask) & ~1);
         }
