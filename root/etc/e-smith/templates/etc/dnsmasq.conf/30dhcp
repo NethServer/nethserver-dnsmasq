@@ -22,7 +22,11 @@
             my $router = $_->prop('DhcpGatewayIP') || '';
             if ($router eq '') {
                 my $i = $ndb->get($_->key);
-                $router = $i->prop('gateway') || $i->prop('ipaddr');
+                if ($ndb->red()) {
+                    $router = $i->prop('ipaddr');
+                } else {
+                    $router = $i->prop('gateway') || $i->prop('ipaddr');
+                }
             }
             if ($router) {
                $OUT .= "dhcp-option=".$_->key.",option:router,$router\n";
