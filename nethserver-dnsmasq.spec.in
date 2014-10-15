@@ -44,6 +44,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 15 2014 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.2.0-1.ns6
+- Support DHCP on multiple interfaces - Feature #2849
+- Avoid multiple static assignement with the same mac - Bug #2833
+
 * Wed Aug 20 2014 Davide Principi <davide.principi@nethesis.it> - 1.1.2-1.ns6
 - Firewall rules: preserve references to other DB records - Enhancement #2835 [NethServer]
 
