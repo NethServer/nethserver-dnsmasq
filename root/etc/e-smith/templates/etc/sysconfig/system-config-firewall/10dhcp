@@ -1,0 +1,8 @@
+{
+    my $access = $dnsmasq{'access'} || 'private';
+    my $status = $dnsmasq{'status'} || 'disabled';
+    return '' if ($access eq 'none');
+    return '' if ($status eq 'disabled');
+    $OUT.="#\tService: dnsmasq DHCP\n";
+    $OUT.="--port=67:udp\n";
+}
