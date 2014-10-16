@@ -1,0 +1,46 @@
+{
+    #
+    # bug2911 -- missing migration fragment for DHCP 
+    #            configuration
+    #
+    
+    use esmith::ConfigDB;
+    use esmith::NetworksDB;
+
+    my $configDb = esmith::ConfigDB->open() || return '';
+    my $networksDb = esmith::NetworksDB->open() || return '';
+    my $dhcpDb = esmith::ConfigDB->open('dhcp') || return '';
+
+    my $firstGreenInterface = $networksDb->green();
+
+    if( ! $firstGreenInterface ) {
+	return '';
+    }
+
+    my $leaseTime = $configDb->get_prop_and_delete('dnsmasq', 'DhcpLeaseTime') || '';
+    my $rangeStart = $configDb->get_prop_and_delete('dnsmasq', 'DhcpRangeStart') || '';
+    my $rangeEnd = $configDb->get_prop_and_delete('dnsmasq', 'DhcpRangeEnd') || '';
+    my $gatewayIp = $configDb->get_prop_and_delete('dnsmasq', 'DhcpGatewayIP') || '';
+    my $dhcpStatus = $configDb->get_prop_and_delete('dnsmasq', 'DhcpStatus') || 'disabled';
+
+    my $targetRecord = $dhcpDb->get($firstGreenInterface->key);
+
+    if($dhcpStatus eq 'enabled' && ! $targetRecord) {
+	$dhcpDb->new_record($firstGreenInterface->key, {
+	    'type' => 'range',
+            'status' => 'enabled',
+	    'DhcpLeaseTime' => $leaseTime,
+	    'DhcpRangeStart' => $rangeStart,
+	    'DhcpRangeEnd' => $rangeEnd,
+	    'DhcpGatewayIP' => $gatewayIp,
+	    'DhcpStatus' => $dhcpStatus
+	});
+
+	#
+	# Remove manual bug workaround:
+	#
+	$configDb->set_prop('dnsmasq', 'access', 'private');
+    }
+
+    '';
+}
