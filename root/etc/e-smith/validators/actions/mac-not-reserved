@@ -35,7 +35,8 @@ my $ip = shift || die('Invalid IP argument');
 my $db = esmith::HostsDB->open_ro();
 foreach ($db->get_all_by_prop('type' => 'local')) {
     my $used_mac = $_->prop('MacAddress');
-    if ($used_mac eq $mac) {
+    my $used_ip = $_->prop('IpAddress');
+    if ($used_mac eq $mac && $used_ip ne $ip) {
         exit 1;
     }
 }
