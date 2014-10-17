@@ -10,7 +10,7 @@ no-resolv
 # does not suppress reading of /etc/resolv.conf, use "no-resolv" to do
 # that.
 {
-    foreach (split ',', $dns{NameServers}, 2) {       
+    foreach (split ',', $dns{NameServers}) {
 	$OUT .= "server=$_\n";
     }
 }
