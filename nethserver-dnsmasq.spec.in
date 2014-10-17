@@ -10,6 +10,9 @@ URL: %{url_prefix}/%{name}
 Requires:	nethserver-hosts
 Requires:	dnsmasq
 
+Obsoletes: nethserver-tftp
+Provides: nethserver-tftp
+
 BuildRequires:	nethserver-devtools
 
 %description
@@ -27,6 +30,7 @@ rm -rf $RPM_BUILD_ROOT
 (cd root   ; find . -depth -print | cpio -dump $RPM_BUILD_ROOT)
 %{genfilelist} \
     $RPM_BUILD_ROOT \
+	--dir /var/lib/tftpboot 'attr(0755, root, root)' \
     > %{name}-%{version}-filelist
 echo "%doc COPYING" >> %{name}-%{version}-filelist
 

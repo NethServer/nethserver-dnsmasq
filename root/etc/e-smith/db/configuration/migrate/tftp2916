@@ -1,0 +1,23 @@
+{
+    #
+    # Enhancement #2916 -- drop nethserver-tftp package and add tftp configuration in nethserver-dnsmasq
+    #
+    
+    use esmith::ConfigDB;
+
+    my $configDb = esmith::ConfigDB->open() || return '';
+
+	my $tftp = $configDb->get('tftp') || return ''; #no tftp key means that migration isn't needed
+	my $dnamasqUDPPorts = $configDb->get_prop('dnsmasq', 'UDPPorts') || return ''; #can't get dnsmasq port config. Exit.
+	
+	if ( $dnamasqUDPPorts =~ /,69([^0-9]|$)/)
+    {	
+		#port 69 is present
+    } else {
+        $configDb->set_prop('dnsmasq','UDPPorts',$dnamasqUDPPorts.',69');
+    }
+
+	#tftp key isn't needed anymore. 
+	$tftp->delete;
+	return '';
+}

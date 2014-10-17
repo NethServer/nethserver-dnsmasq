@@ -1,0 +1,21 @@
+#
+# 80tftp
+#
+{
+    use esmith::InterfacesDB;
+
+    $status = $dnsmasq{'tftp-status'} || 'disabled';
+	$dhcpboot = $dnsmasq{'dhcp-boot'}|| '';
+    if ($status eq 'enabled') {
+       my $ndb = esmith::InterfacesDB->open_ro() || return;
+       my $LocalIP = $ndb->green()->prop('ipaddr') || return;
+       $OUT.="enable-tftp\n";
+       $OUT.="tftp-secure\n";
+	   if ($dhcpboot ne '')
+	   {
+           $OUT.="dhcp-boot=$dhcpboot\n";
+       }
+       $OUT.="tftp-root=/var/lib/tftpboot\n";
+       $OUT.="dhcp-option=66,\"$LocalIP\"";
+    }
+}
