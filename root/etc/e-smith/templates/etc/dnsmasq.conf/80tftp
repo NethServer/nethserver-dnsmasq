@@ -2,12 +2,12 @@
 # 80tftp
 #
 {
-    use esmith::InterfacesDB;
+    use esmith::NetworksDB;
 
     $status = $dnsmasq{'tftp-status'} || 'disabled';
 	$dhcpboot = $dnsmasq{'dhcp-boot'}|| '';
     if ($status eq 'enabled') {
-       my $ndb = esmith::InterfacesDB->open_ro() || return;
+       my $ndb = esmith::NetworksDB->open_ro() || return;
        my $LocalIP = $ndb->green()->prop('ipaddr') || return;
        $OUT.="enable-tftp\n";
        $OUT.="tftp-secure\n";
