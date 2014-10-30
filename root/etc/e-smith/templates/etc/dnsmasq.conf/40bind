@@ -1,0 +1,17 @@
+#
+# 40bind
+#
+{
+    my @interfaces;
+    my $ndb = esmith::NetworksDB->open_ro() || die "Can't open networks database: $!\n";
+
+    foreach ($ndb->red()) {
+        push(@interfaces,$_->key);
+    }
+    my $exeception = $dnsmasq{'except-interface'} || '';
+    push(@interfaces,split(',',$exeception));
+    foreach (@interfaces) {
+        $OUT .= "except-interface=".$_."\n";
+    }
+}
+bind-interfaces
