@@ -2,8 +2,9 @@
     #
     # 40dnsRoleResolver
     #
+    use NethServer::Service;
     $OUT = '';
-    if($dns{'role'} eq 'resolver') {
+    if( NethServer::Service::is_enabled('dnsmasq') ) {
 	$OUT .= "# dnsmasq is enabled on this machine:\n";
 	$OUT .= "nameserver 127.0.0.1\n";
     }

@@ -32,8 +32,7 @@ event_templates($_, qw(
 
 # conf BEFORE expand templates, to read db default values - Refs #1059
 event_actions('nethserver-dnsmasq-update',
-	      'initialize-default-databases' => '00',
-	      'nethserver-dnsmasq-conf' => '02');
+	      'initialize-default-databases' => '00');
 
 event_services('nethserver-dnsmasq-update',
 	       'dnsmasq' => 'restart');

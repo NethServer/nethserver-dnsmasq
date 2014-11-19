@@ -38,7 +38,6 @@ class Dnsmasq extends \Nethgui\Controller\AbstractController
         $dns = array();
         $k = $this->getPlatform()->getDatabase('configuration')->getKey('dns');
         $dns['servers'] = $k['NameServers'];
-        $dns['role'] = $k['role'];
 
         return $dns;
     }
