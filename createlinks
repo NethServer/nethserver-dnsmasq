@@ -24,7 +24,6 @@ event_templates($_, qw(
 		/etc/dnsmasq.conf
 		/etc/resolv.conf
 		/etc/dnsmasq-dhcp-hosts
-		/etc/ppp/options.xl2tpd
 )) foreach (qw(
   nethserver-dnsmasq-update
 ));
@@ -69,7 +68,6 @@ validator_actions('dhcp-reservation',
 #--------------------------------------------------
 event_templates('nethserver-dnsmasq-save', qw(
 		/etc/dnsmasq.conf
-		/etc/ppp/options.xl2tpd
 ));
 event_services('nethserver-dnsmasq-save',
 	       'dnsmasq' => 'restart');
@@ -83,7 +81,6 @@ event_actions('nethserver-dnsmasq-save',
 #--------------------------------------------------
 event_templates('nethserver-hosts-save', qw(
 		/etc/dnsmasq.conf
-		/etc/ppp/options.xl2tpd
 ));
 event_services('nethserver-hosts-save',
 	       'dnsmasq' => 'restart');
