@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 09 2014 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.4.0-1.ns6
+- DNS: remove role property from dns db key - Enhancement #2915 [NethServer]
+
 * Tue Nov 11 2014 Davide Principi <davide.principi@nethesis.it> - 1.3.1-1.ns6
 - DHCP: bind dnsmasq to specific interfaces - Enhancement #2926 [NethServer]
 
