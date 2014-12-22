@@ -51,6 +51,14 @@ class Modify extends \Nethgui\Controller\Table\Modify
         parent::validate($report);
     }
 
+    public function process()
+    {
+        parent::process();
+        if($this->getRequest()->isMutation()) {
+            $this->getAdapter()->offsetUnset('LeaseStatus');
+        }
+    }
+
     public function onParametersSaved($changes)
     {
         $actionName = $this->getIdentifier();

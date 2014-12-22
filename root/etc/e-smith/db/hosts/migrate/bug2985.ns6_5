@@ -1,0 +1,14 @@
+{
+	#
+	# bug2985.ns6_5 -- remove LeaseStatus prop from hosts/local records
+	#
+	
+	use esmith::HostsDB;
+	my $db = esmith::HostsDB->open();
+	foreach ($db->get_all_by_prop( type => 'local' )) {
+		my %props = $_->props;
+		if(exists $props{'LeaseStatus'}) {
+			$_->delete_prop('LeaseStatus');
+		}
+	}
+}

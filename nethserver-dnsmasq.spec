@@ -1,13 +1,13 @@
 Name:		nethserver-dnsmasq
 Summary:	SME configuration files for dnsmasq
-Version:	@@VERSION@@
-Release:	@@RELEASE@@	
+Version:	1.4.0
+Release:	1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
 BuildArch:	noarch
 URL: %{url_prefix}/%{name} 
 
-Requires:	nethserver-hosts
+Requires:	nethserver-hosts > 1.1.0-1.ns6
 Requires:	dnsmasq
 
 Obsoletes: nethserver-tftp
