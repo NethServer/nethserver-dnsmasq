@@ -1,7 +1,7 @@
 Name:		nethserver-dnsmasq
 Summary:	SME configuration files for dnsmasq
-Version:	1.4.0
-Release:	1%{?dist}
+Version: 1.4.1
+Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
 BuildArch:	noarch
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jan 20 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.4.1-1.ns6
+- DHCP LeaseStatus prop persisted to DB - Bug #2985 [NethServer]
+
 * Tue Dec 09 2014 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.4.0-1.ns6
 - DNS: remove role property from dns db key - Enhancement #2915 [NethServer]
 
