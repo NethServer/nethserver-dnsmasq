@@ -11,6 +11,7 @@
     use NetAddr::IP;
     my $db = esmith::ConfigDB->open_ro("dhcp") || die "Can't open dhcp database: $!\n";
     my $ndb = esmith::NetworksDB->open_ro() || die "Can't open networks database: $!\n";
+    my $tot_range_length = 0;
     foreach ($db->get_all_by_prop("type" => "range")) {
         my $status = $_->prop('status') || 'disabled';
         if ( $status eq 'enabled') {
@@ -19,9 +20,9 @@
             my $start_ip = new NetAddr::IP($start);
             my $end_ip = new NetAddr::IP($end);
             my $range_length = $end_ip->numeric - $start_ip->numeric;
+            $tot_range_length += $range_length;
             my $lease = $_->prop('DhcpLeaseTime') || '86400';
             $OUT .= 'dhcp-range=' . join(',',$_->key,$start,$end,$lease) . "\n";
-            $OUT .= "dhcp-lease-max=$range_length\n";
 
             # Send router configuration to clients
             my $router = $_->prop('DhcpGatewayIP') || '';
@@ -41,6 +42,9 @@
         } else {
             $OUT .= "\n# DHCP disabled on ".$_->key."\n";
         } 
+    }
+    if ($tot_range_length > 0) {
+        $OUT .= "dhcp-lease-max=$tot_range_length\n";
     }
 }
 
