@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	SME configuration files for dnsmasq
-Version: 1.4.2
+Version: 1.4.3
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jan 28 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.4.3-1.ns6
+- Dnsmasq doesn't start: illegal repeated keyword at line 82 of /etc/dnsmasq.conf - Bug #3014 [NethServer]
+
 * Tue Jan 27 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.4.2-1.ns6
 - Dhcp server doesn't use all range available - Bug #2994 [NethServer]
 
