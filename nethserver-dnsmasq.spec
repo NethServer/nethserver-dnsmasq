@@ -1,5 +1,5 @@
 Name:		nethserver-dnsmasq
-Summary:	SME configuration files for dnsmasq
+Summary:	NethServer configuration files for dnsmasq
 Version: 1.4.3
 Release: 1%{?dist}
 License:	GPL
