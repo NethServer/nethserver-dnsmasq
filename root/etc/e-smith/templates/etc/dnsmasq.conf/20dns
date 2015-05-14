@@ -5,8 +5,30 @@
 # Never forward plain names (without a dot or domain part)
 domain-needed
 
-# Never forward addresses in the non-routed address spaces.
-bogus-priv
+{
+    use NetAddr::IP;
+    my $bogus_priv = 0;
+    my @dns = split(',', ($dns{NameServers} || ''));
+    my @private_nets = ('127.0.0.0/8', '192.168.0.0/16', '10.0.0.0/8', '172.16.0.0/12', '169.254.0.0/16');
+    foreach my $dns (@dns) {
+         my $is_private = 0;
+         foreach my $net (@private_nets) {
+             my $ip = NetAddr::IP->new($dns);
+             my $network = NetAddr::IP->new($net);
+             if ($ip->within($network)) {
+                  $is_private = 1;
+             }
+         }
+         if (!$is_private) {
+             $bogus_priv = 1;
+         }
+    }
+
+    if ($bogus_priv) {
+        $OUT.="# Never forward addresses in the non-routed address spaces.\n";
+        $OUT.="bogus-priv\n";
+    }
+}
 
 # Domain is automatically added to simple names in a hosts-file.
 expand-hosts
