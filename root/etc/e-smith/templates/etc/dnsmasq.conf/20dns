@@ -11,4 +11,10 @@ bogus-priv
 # Domain is automatically added to simple names in a hosts-file.
 expand-hosts
 
-
+{
+    my $cache = $dnsmasq{'CacheSize'} || "4000";
+    if ($cache > 10000) { # upper limit is #10K
+        $cache = 10000;
+    }
+    $OUT.="cache-size=$cache";
+}
