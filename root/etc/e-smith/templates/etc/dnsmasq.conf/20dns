@@ -27,6 +27,8 @@ domain-needed
     if ($bogus_priv) {
         $OUT.="# Never forward addresses in the non-routed address spaces.\n";
         $OUT.="bogus-priv\n";
+    } else {
+        $OUT.="# Using private dns servers, forwarding requests\n";
     }
 }
 
