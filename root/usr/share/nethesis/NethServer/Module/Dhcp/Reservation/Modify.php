@@ -55,7 +55,9 @@ class Modify extends \Nethgui\Controller\Table\Modify
     {
         parent::process();
         if($this->getRequest()->isMutation()) {
-            $this->getAdapter()->offsetUnset('LeaseStatus');
+            if($this->getAdapter()->offsetExists('LeaseStatus')) {
+                $this->getAdapter()->offsetUnset('LeaseStatus');
+            }
         }
     }
 
