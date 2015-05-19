@@ -1,0 +1,15 @@
+[main]
+host = https://www.transifex.com
+
+[nethserver.Dhcp]
+source_file = root/usr/share/nethesis/NethServer/Language/en/NethServer_Module_Dhcp.php
+source_lang = en
+type = PHP_ALT_ARRAY
+
+
+[nethserver.Dashboard_SystemStatus_Dnsmasq]
+source_file = root/usr/share/nethesis/NethServer/Language/en/NethServer_Module_Dashboard_SystemStatus_Dnsmasq.php
+source_lang = en
+type = PHP_ALT_ARRAY
+
+
