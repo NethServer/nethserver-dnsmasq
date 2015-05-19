@@ -1,4 +1,4 @@
-#!/bin/env /usr/bin/python
+#!/usr/bin/python
 
 #
 # Copyright (C) 2013 Nethesis S.r.l.
@@ -28,13 +28,19 @@ import sys
 db = []
 fields = ['expire', 'mac', 'ip', 'name', 'client']
 
-fh = os.fdopen(os.open("/var/lib/dnsmasq/dnsmasq.leases", os.O_RDONLY))
+try:
+    fh = os.fdopen(os.open("/var/lib/dnsmasq/dnsmasq.leases", os.O_RDONLY))
 
-for line in fh:    
-    values = map(lambda v: v if v != "*" else None, line.rstrip().split(' ')[:len(fields)])
-    values[0] = int(values[0])
-    db.append(dict(zip(fields, values)))
+    for line in fh:
+        values = map(lambda v: v if v != "*" else None, line.rstrip().split(' ')[:len(fields)])
+        values[0] = int(values[0])
+        db.append(dict(zip(fields, values)))
+
+    fh.close()
+
+except Exception as e:
+    sys.stderr.write("[WARNING] %s\n" % e)
 
 json.dump(db, sys.stdout)
 
-fh.close()
+
