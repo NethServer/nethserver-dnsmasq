@@ -26,7 +26,7 @@ use esmith::NetworksDB;
 use esmith::util;
 
 my $mac = shift || die("Missing MAC argument");
-my $ip = shift || die("Missing IP argument");
+my $ip = pop || die("Missing IP argument");
 
 my $db = esmith::ConfigDB->open_ro() or die("Could not open Config DB");
 

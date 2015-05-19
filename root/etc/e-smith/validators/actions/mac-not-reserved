@@ -30,10 +30,15 @@ use esmith::util;
 use esmith::HostsDB;
 
 my $mac = shift || die('Invalid MAC argument');
-my $ip = shift || die('Invalid IP argument');
+my $key = shift || die('Invalid key argument');
+my $ip = pop || die('Invalid IP argument');
+
 
 my $db = esmith::HostsDB->open_ro();
 foreach ($db->get_all_by_prop('type' => 'local')) {
+    if($_->key eq $key) {
+        next;
+    }
     my $used_mac = $_->prop('MacAddress');
     my $used_ip = $_->prop('IpAddress');
     if ($used_mac eq $mac && $used_ip ne $ip) {

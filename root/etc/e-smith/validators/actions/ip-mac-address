@@ -29,7 +29,7 @@ use strict;
 use esmith::util;
 
 my $mac = shift || die('Invalid MAC argument');
-my $ip = shift || die('Invalid IP argument');
+my $ip = pop || die('Invalid IP argument');
 
 # Redirect ping output to /dev/null
 open(my $oldout, '>&STDOUT') || die('Could not dup STDOUT: $!');

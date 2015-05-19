@@ -40,7 +40,7 @@ class Modify extends \Nethgui\Controller\Table\Modify
         // Bind the dhcp-reservation platform validator:
         if ($this->getRequest()->isMutation()) {
             $this->getValidator('IpAddress')
-                ->platform('dhcp-reservation', $this->parameters['MacAddress']);
+                ->platform('dhcp-reservation', $this->parameters['MacAddress'], $this->parameters['hostname']);
         }
         if ($this->getIdentifier() === 'delete') {
             $v = $this->createValidator()->platform('host-delete');
