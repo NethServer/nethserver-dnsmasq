@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	NethServer configuration files for dnsmasq
-Version: 1.4.3
+Version: 1.4.4
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -48,6 +48,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 19 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.4.4-1
+- Reverse dns fails if an internal DNS is configured - Enhancement #3054 [NethServer]
+- Adjust default dnsmasq cache - Enhancement #3024 [NethServer]
+
 * Wed Jan 28 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.4.3-1.ns6
 - Dnsmasq doesn't start: illegal repeated keyword at line 82 of /etc/dnsmasq.conf - Bug #3014 [NethServer]
 
