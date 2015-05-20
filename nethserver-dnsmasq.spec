@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	NethServer configuration files for dnsmasq
-Version: 1.4.4
+Version: 1.4.5
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed May 20 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.4.5-1
+- Cannot modify DHCP reservation - Bug #3107 [NethServer]
+
 * Tue May 19 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.4.4-1
 - Reverse dns fails if an internal DNS is configured - Enhancement #3054 [NethServer]
 - Adjust default dnsmasq cache - Enhancement #3024 [NethServer]
