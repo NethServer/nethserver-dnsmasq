@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	NethServer configuration files for dnsmasq
-Version: 1.4.5
+Version: 1.4.6
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 22 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.4.6-1
+- DHCP: can't create reservation with "Reserve IP" button - Bug #3181 [NethServer]
+
 * Wed May 20 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.4.5-1
 - Cannot modify DHCP reservation - Bug #3107 [NethServer]
 
