@@ -44,7 +44,7 @@ class Reserve extends \Nethgui\Controller\Table\RowAbstractAction
     {
         // Bind the dhcp-reservation platform validator:
         $this->getValidator('IpAddress')
-            ->platform('dhcp-reservation', $this->parameters['MacAddress']);
+            ->platform('dhcp-reservation', $this->parameters['MacAddress'], $this->parameters['hostname']);
 
         parent::validate($report);
     }
