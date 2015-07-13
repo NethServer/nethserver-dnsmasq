@@ -14,4 +14,3 @@
         $OUT .= "except-interface=".$_."\n";
     }
 }
-bind-interfaces
