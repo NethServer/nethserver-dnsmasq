@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	NethServer configuration files for dnsmasq
-Version: 1.4.6
+Version: 1.4.7
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 15 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.4.7-1
+- Dnsmasq: drop bind-interfaces implementation - Enhancement #3220 [NethServer]
+
 * Fri May 22 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.4.6-1
 - DHCP: can't create reservation with "Reserve IP" button - Bug #3181 [NethServer]
 
