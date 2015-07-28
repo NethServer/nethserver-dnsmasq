@@ -76,6 +76,8 @@ class Configure extends \Nethgui\Controller\AbstractController
         }
 
         $statusValidator = $this->createValidator(Validate::SERVICESTATUS);
+        $hostnameValidator = $this->createValidator(Validate::HOSTNAME);
+        $positiveValidator = $this->createValidator(Validate::POSITIVE_INTEGER);
         $ipValidator = $this->createValidator()->ipV4Address();
 
         $interfaces = $this->getNetworkInterfaces();
@@ -103,6 +105,31 @@ class Configure extends \Nethgui\Controller\AbstractController
                 }
             } else {
                 $report->addValidationError($fakeModule, 'DhcpRangeEnd', $ipValidator);
+            }
+            if (isset($record['DhcpGatewayIP']) && $record['DhcpGatewayIP']) {
+               if (!$ipValidator->evaluate($record['DhcpGatewayIP'])) {
+                   $report->addValidationError($fakeModule, 'DhcpGatewayIP', $ipValidator);
+               }
+            }
+            if (isset($record['DhcpLeaseTime']) && $record['DhcpLeaseTime'] > 0) {
+               if (!$positiveValidator->evaluate($record['DhcpLeaseTime'])) {
+                   $report->addValidationError($fakeModule, 'DhcpLeaseTime', $positiveValidator);
+               }
+            }
+            if (isset($record['DhcpDomain']) && $record['DhcpDomain']) {
+               if (!$hostnameValidator->evaluate($record['DhcpDomain'])) {
+                   $report->addValidationError($fakeModule, 'DhcpDomain', $hostnameValidator);
+               }
+            }
+            $props = array('DhcpDNS', 'DhcpWINS', 'DhcpNTP', 'DhcpTFTP');
+            foreach ($props as $prop) {
+                if (isset($record[$prop]) && $record[$prop]) {
+                    foreach (explode(',',$record[$prop]) as $ip) {
+                        if (!$ipValidator->evaluate($ip)) {
+                            $report->addValidationError($fakeModule, $prop, $ipValidator);
+                        }
+                   }
+                }
             }
         }
     }
@@ -183,6 +210,13 @@ class Configure extends \Nethgui\Controller\AbstractController
                 'status' => isset($record['status']) ? $record['status'] : 'disabled',
                 'DhcpRangeStart' => isset($record['DhcpRangeStart']) ? $record['DhcpRangeStart'] : $this->getDefaultRange('start', $key, $props),
                 'DhcpRangeEnd' => isset($record['DhcpRangeEnd']) ? $record['DhcpRangeEnd'] : $this->getDefaultRange('end', $key, $props),
+                'DhcpGatewayIP' => isset($record['DhcpGatewayIP']) ? $record['DhcpGatewayIP'] : '',
+                'DhcpLeaseTime' => isset($record['DhcpLeaseTime']) ? $record['DhcpLeaseTime'] : '',
+                'DhcpDomain' => isset($record['DhcpDomain']) ? $record['DhcpDomain'] : '',
+                'DhcpDNS' => isset($record['DhcpDNS']) ? $record['DhcpDNS'] : '',
+                'DhcpWINS' => isset($record['DhcpWINS']) ? $record['DhcpWINS'] : '',
+                'DhcpNTP' => isset($record['DhcpNTP']) ? $record['DhcpNTP'] : '',
+                'DhcpTFTP' => isset($record['DhcpTFTP']) ? $record['DhcpTFTP'] : '',
             );
         }
 
