@@ -80,6 +80,12 @@
         } 
     }
     if ($tot_range_length > 0) {
+        use esmith::HostsDB;
+        my $hdb = esmith::HostsDB->open_ro() || die "Can't open hosts database: $!\n";
+        foreach ($hdb->get_all_by_prop('type' => 'local')) {
+            $_->prop('MacAddress') || next;
+            $tot_range_length++;
+        }
         $OUT .= "dhcp-lease-max=$tot_range_length\n";
     }
 }
