@@ -54,12 +54,14 @@ sub is_local_ip
 
     # Make sure that the IP is indeed local.
     my $ndb = esmith::NetworksDB->open_ro;
-    my @local_list = $ndb->local_access_spec;
+    my @interfaces = $ndb->green();
+    push(@interfaces, $ndb->blue());
 
-    foreach my $spec (@local_list)
+    foreach my $i (@interfaces)
     {
-        next if $spec eq '127.0.0.1';
-        if (Net::IPv4Addr::ipv4_in_network($spec, $localip))
+        my $ipaddr = $i->prop('ipaddr') || next;
+        my $mask = $i->prop('netmask') || next;
+        if (Net::IPv4Addr::ipv4_in_network(esmith::util::computeLocalNetworkShortSpec($ipaddr,$mask), $localip))
         {
             return 1;
         }
