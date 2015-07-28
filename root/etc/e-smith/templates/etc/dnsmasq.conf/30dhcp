@@ -15,6 +15,7 @@
     foreach ($db->get_all_by_prop("type" => "range")) {
         my $status = $_->prop('status') || 'disabled';
         if ( $status eq 'enabled') {
+            my $interface = $_->key;
             my $start = $_->prop('DhcpRangeStart') || next;
             my $end = $_->prop('DhcpRangeEnd') || next;
             my $start_ip = new NetAddr::IP($start);
@@ -23,6 +24,11 @@
             $tot_range_length += $range_length;
             my $lease = $_->prop('DhcpLeaseTime') || '86400';
             $OUT .= 'dhcp-range=' . join(',',$_->key,$start,$end,$lease) . "\n";
+
+            my $domain = $_->prop('DhcpDomain') || '';
+            if ($domain ne '') {
+                $OUT .= 'domain=' . join(',',$domain,$start,$end) . "\n";
+            }
 
             # Send router configuration to clients
             my $router = $_->prop('DhcpGatewayIP') || '';
@@ -39,6 +45,36 @@
             } else {
                $OUT .= "# dhcp-option=".$_->key.",option:router,<UNDEFINED>";
             }
+
+            my $dns_server = $_->prop('DhcpDNS') || '';
+            if ($dns_server ne '') {
+               foreach (split(',',$dns_server)) {
+                   $OUT .= "dhcp-option=$interface,option:dns-server,$_\n";
+               }
+            }
+
+            my $ntp_server = $_->prop('DhcpNTP') || '';
+            if ($ntp_server ne '') {
+               foreach (split(',',$ntp_server)) {
+                   $OUT .= "dhcp-option=$interface,option:ntp-server,$_\n";
+               }
+            }
+
+            my $wins_server = $_->prop('DhcpWINS') || '';
+            if ($wins_server ne '') {
+               foreach (split(',',$wins_server)) {
+                   $OUT .= "dhcp-option=$interface,44,$_ # WINS\n";
+               }
+            }
+
+            my $tftp_server = $_->prop('DhcpTFTP') || '';
+            if ($tftp_server ne '') {
+               foreach (split(',',$tftp_server)) {
+                   $OUT .= "dhcp-option=$interface,66,$_ # TFTP\n";
+               }
+            }
+
+
         } else {
             $OUT .= "\n# DHCP disabled on ".$_->key."\n";
         } 
