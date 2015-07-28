@@ -25,7 +25,35 @@ Range start
 
 Range end
     The last IP address of the range, addresses between Start and End
-    will ge assigned to clients.
+    will be assigned to clients.
+
+Gateway IP
+    Optional gateway IP to be sent to DHCP clients.
+    If left blank, the server itself will be the gateway for all clients.
+
+Lease Time
+    Optional duration of IP lease. 
+    If left blank, default is 86400 seconds (24 hours).
+
+Domain
+    Optional domain name to be sent to DHCP clients.
+    If set, this domain will be appended to name resolution of clients.
+
+DNS servers
+    Optional comma-separated list of DNS servers to be sent to DHCP clients.
+    If left blank, the server itself will be the DNS server for all clients.
+
+WINS servers
+    Optional comma-separated list of WINS servers to be sent to DHCP clients.
+    If left blank, the server itself will be the WINS server for all clients.
+
+NTP servers
+    Optional comma-separated list of NTP servers to be sent to DHCP clients.
+    If left blank, the server itself will be the NTP server for all clients.
+
+TFTP servers
+    Optional comma-separated list of TFTP servers to be sent to DHCP clients.
+    If left blank, the server itself will be the TFTP server for all clients.
 
 Reservation
 ===========
