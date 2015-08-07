@@ -152,7 +152,7 @@ class Configure extends \Nethgui\Controller\AbstractController
         }
 
         $interfaces = array_filter($this->getPlatform()->getDatabase('networks')->getAll(), function ($record) {
-            if ( ! in_array($record['type'], array('ethernet', 'bridge', 'bond'))) {
+            if ( ! in_array($record['type'], array('ethernet', 'bridge', 'bond', 'vlan'))) {
                 return FALSE;
             }
             if ( ! in_array($record['role'], array('green', 'blue'))) {
