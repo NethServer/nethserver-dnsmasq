@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	NethServer configuration files for dnsmasq
-Version: 1.5.0
+Version: 1.5.1
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 08 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.5.1-1
+- Configure DHCP on VLANs - Enhancement #3238
+
 * Thu Aug 27 2015 Davide Principi <davide.principi@nethesis.it> - 1.5.0-1
 - Custom DHCP options - Feature #3036 [NethServer]
 
