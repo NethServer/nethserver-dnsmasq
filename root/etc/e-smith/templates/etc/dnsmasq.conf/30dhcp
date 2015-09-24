@@ -48,11 +48,7 @@
 
             my $dns_server = $_->prop('DhcpDNS') || '';
             if ($dns_server ne '') {
-               $OUT .= "dhcp-option=$interface,option:dns-server";
-               foreach (split(',',$dns_server)) {
-                  $OUT .= ",$_";
-               }
-               $OUT .= "\n";
+               $OUT .= "dhcp-option=$interface,option:dns-server,$dns_server\n";
             }
 
             my $ntp_server = $_->prop('DhcpNTP') || '';
