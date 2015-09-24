@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	NethServer configuration files for dnsmasq
-Version: 1.5.1
+Version: 1.5.2
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 24 2015 Davide Principi <davide.principi@nethesis.it> - 1.5.2-1
+- Drop lokkit support, always use shorewall - Enhancement #3258 [NethServer]
+
 * Tue Sep 08 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.5.1-1
 - Configure DHCP on VLANs - Enhancement #3238
 
