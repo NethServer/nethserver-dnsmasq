@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	NethServer configuration files for dnsmasq
-Version: 1.5.2
+Version: 1.5.3
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 29 2015 Davide Principi <davide.principi@nethesis.it> - 1.5.3-1
+- DHCP: multiple dns option ignored - Bug #3262 [NethServer]
+
 * Thu Sep 24 2015 Davide Principi <davide.principi@nethesis.it> - 1.5.2-1
 - Drop lokkit support, always use shorewall - Enhancement #3258 [NethServer]
 
