@@ -16,6 +16,7 @@
         my $status = $_->prop('status') || 'disabled';
         if ( $status eq 'enabled') {
             my $interface = $_->key;
+            my $netmask = $ndb->get($interface)->prop('netmask') || next;
             my $start = $_->prop('DhcpRangeStart') || next;
             my $end = $_->prop('DhcpRangeEnd') || next;
             my $start_ip = new NetAddr::IP($start);
@@ -23,7 +24,7 @@
             my $range_length = $end_ip->numeric - $start_ip->numeric;
             $tot_range_length += $range_length;
             my $lease = $_->prop('DhcpLeaseTime') || '86400';
-            $OUT .= 'dhcp-range=' . join(',',$_->key,$start,$end,$lease) . "\n";
+            $OUT .= 'dhcp-range=' . join(',',$_->key,$start,$end,$netmask,$lease) . "\n";
 
             my $domain = $_->prop('DhcpDomain') || '';
             if ($domain ne '') {
