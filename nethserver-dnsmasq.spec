@@ -33,7 +33,6 @@ rm -rf %{buildroot}
 	--dir /var/lib/tftpboot 'attr(0755, root, root)' \
     > %{name}-%{version}-filelist
 echo "%doc COPYING" >> %{name}-%{version}-filelist
-%dir %{_nseventsdir}/%{name}-update
 
 %clean
 rm -rf %{buildroot}
@@ -45,6 +44,7 @@ rm -rf %{buildroot}
 %files -f %{name}-%{version}-filelist
 %defattr(-,root,root,-)
 %doc
+%dir %{_nseventsdir}/%{name}-update
 
 
 
