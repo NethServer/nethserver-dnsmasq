@@ -26,16 +26,16 @@ Provides DNS and DHCP services on the local network
 perl createlinks
 
 %install
-rm -rf $RPM_BUILD_ROOT
-(cd root   ; find . -depth -print | cpio -dump $RPM_BUILD_ROOT)
+rm -rf %{buildroot}
+(cd root   ; find . -depth -print | cpio -dump %{buildroot})
 %{genfilelist} \
-    $RPM_BUILD_ROOT \
+    %{buildroot} \
 	--dir /var/lib/tftpboot 'attr(0755, root, root)' \
     > %{name}-%{version}-filelist
 echo "%doc COPYING" >> %{name}-%{version}-filelist
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %post
 
@@ -44,6 +44,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}-%{version}-filelist
 %defattr(-,root,root,-)
 %doc
+%dir %{_nseventsdir}/%{name}-update
 
 
 
