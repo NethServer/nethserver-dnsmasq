@@ -45,7 +45,7 @@ foreach (qw(
     host-modify 
 )) {
     event_services($_, qw(
-       dnsmasq reload
+       dnsmasq restart
     ));
     event_templates($_, qw(
        /etc/dnsmasq-dhcp-hosts
