@@ -62,14 +62,14 @@
             my $wins_server = $_->prop('DhcpWINS') || '';
             if ($wins_server ne '') {
                foreach (split(',',$wins_server)) {
-                   $OUT .= "dhcp-option=$interface,44,$_ # WINS\n";
+                   $OUT .= "dhcp-option=$interface,option:netbios-ns,$_\n";
                }
             }
 
             my $tftp_server = $_->prop('DhcpTFTP') || '';
             if ($tftp_server ne '') {
                foreach (split(',',$tftp_server)) {
-                   $OUT .= "dhcp-option=$interface,66,$_ # TFTP\n";
+                   $OUT .= "dhcp-option=$interface,option:tftp-server,\"$_\"\n";
                }
             }
 
