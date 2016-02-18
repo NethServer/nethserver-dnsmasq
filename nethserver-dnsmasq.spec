@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	NethServer configuration files for dnsmasq
-Version: 1.5.5
+Version: 1.5.6
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 18 2016 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.5.6-1
+- DHCP TFTP server ignored by clients - Bug #3353 [NethServer]
+
 * Mon Nov 30 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.5.5-1
 - Invalid firewall rules after deleting host object - Bug #3324 [NethServer]
 
