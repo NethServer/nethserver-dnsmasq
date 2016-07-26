@@ -9,6 +9,6 @@
 # 2) Sets the "domain" DHCP option thereby potentially setting the
 #    domain of all systems configured by DHCP
 # 3) Provides the domain part for "expand-hosts" 
-domain={ $DomainName }
+domain={ $DomainName || 'localdomain' }
 
 
