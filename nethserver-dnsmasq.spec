@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	NethServer configuration files for dnsmasq
-Version: 1.6.0
+Version: 1.6.1
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -49,6 +49,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Aug 05 2016 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.6.1-1
+- Web UI: missing labels - Bug NethServer/dev#5061
+- Host domain initialization failure - Bug NethServer/dev#5069
+
 * Thu Jul 07 2016 Stefano Fancello <stefano.fancello@nethesis.it> - 1.6.0-1
 - First NS7 release
 
