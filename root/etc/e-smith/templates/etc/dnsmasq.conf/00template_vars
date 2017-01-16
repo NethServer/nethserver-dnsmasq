@@ -2,13 +2,7 @@
     #
     # 00template_vars
     #
-    use esmith::InterfacesDB;
-    $ndb = esmith::InterfacesDB->open_ro();
-
-    if( ! $ndb) {
-	my $msg = "Could not open InterfacesDB!";
-	warn $msg;
-	return "# " . $msg;
-    }
+    use esmith::NetworksDB;
+    $ndb = esmith::NetworksDB->open_ro();
     ''; # expand to an empty string
 }
