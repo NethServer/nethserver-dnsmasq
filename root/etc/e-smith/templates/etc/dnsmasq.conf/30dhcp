@@ -24,7 +24,7 @@
             my $range_length = $end_ip->numeric - $start_ip->numeric;
             $tot_range_length += $range_length;
             my $lease = $_->prop('DhcpLeaseTime') || '86400';
-            $OUT .= 'dhcp-range=' . join(',',$_->key,$start,$end,$netmask,$lease) . "\n";
+            $OUT .= 'dhcp-range=set:' . $_->key . ',' . join(',',$start,$end,$netmask,$lease) . "\n";
 
             my $domain = $_->prop('DhcpDomain') || '';
             if ($domain ne '') {
@@ -42,34 +42,34 @@
                 }
             }
             if ($router) {
-               $OUT .= "dhcp-option=".$_->key.",option:router,$router\n";
+               $OUT .= "dhcp-option=tag:".$_->key.",option:router,$router\n";
             } else {
-               $OUT .= "# dhcp-option=".$_->key.",option:router,<UNDEFINED>";
+               $OUT .= "# dhcp-option=tag:".$_->key.",option:router,<UNDEFINED>";
             }
 
             my $dns_server = $_->prop('DhcpDNS') || '';
             if ($dns_server ne '') {
-               $OUT .= "dhcp-option=$interface,option:dns-server,$dns_server\n";
+               $OUT .= "dhcp-option=tag:$interface,option:dns-server,$dns_server\n";
             }
 
             my $ntp_server = $_->prop('DhcpNTP') || '';
             if ($ntp_server ne '') {
                foreach (split(',',$ntp_server)) {
-                   $OUT .= "dhcp-option=$interface,option:ntp-server,$_\n";
+                   $OUT .= "dhcp-option=tag:$interface,option:ntp-server,$_\n";
                }
             }
 
             my $wins_server = $_->prop('DhcpWINS') || '';
             if ($wins_server ne '') {
                foreach (split(',',$wins_server)) {
-                   $OUT .= "dhcp-option=$interface,option:netbios-ns,$_\n";
+                   $OUT .= "dhcp-option=tag:$interface,option:netbios-ns,$_\n";
                }
             }
 
             my $tftp_server = $_->prop('DhcpTFTP') || '';
             if ($tftp_server ne '') {
                foreach (split(',',$tftp_server)) {
-                   $OUT .= "dhcp-option=$interface,option:tftp-server,\"$_\"\n";
+                   $OUT .= "dhcp-option=tag:$interface,option:tftp-server,\"$_\"\n";
                }
             }
 
