@@ -46,12 +46,6 @@ $dstConfigDb->set_prop('dnsmasq', 'DhcpStatus', $status, type => 'service');
 $dstConfigDb->set_prop('dnsmasq', 'DhcpRangeStart', $start, type => 'service');
 $dstConfigDb->set_prop('dnsmasq', 'DhcpRangeEnd', $end, type => 'service');
 
-my $dnscache = $srcConfigDb->get('dnscache');
-my $status = $dnscache->prop('status') || 'disabled';
-my $access = $dnscache->prop('access') || 'private';
-$dstConfigDb->set_prop('dnsmasq', 'status', $status, type => 'service');
-$dstConfigDb->set_prop('dnsmasq', 'access', $access, type => 'service');
-
 #
 # Apply configuration
 # 
