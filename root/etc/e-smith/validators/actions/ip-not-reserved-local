@@ -21,26 +21,25 @@
 #
 
 use strict;
-use esmith::ConfigDB;
 use esmith::NetworksDB;
 use esmith::util;
 
 my $mac = shift || die("Missing MAC argument");
 my $ip = pop || die("Missing IP argument");
 
-my $db = esmith::ConfigDB->open_ro() or die("Could not open Config DB");
+my $ndb = esmith::NetworksDB->open_ro or die("Could not open Networks DB");;
 
 sub is_reserved_ip
 {
     my $checkIp = shift;
 
-    my @takenList = map { defined $_ ? $_ : () } ('127.0.0.1',
-				$db->get_prop('InternalInterface', 'IPAddress'),
-				$db->get_value('GatewayIP'),
-				$db->get_prop('ExternalInterface', 'IPAddress')
-    );
+    my @reserved = ('127.0.0.1');
+    foreach ($ndb->interfaces()) {
+        my $ipaddr = $_->prop('ipaddr') || next;
+        push (@reserved, $ipaddr);
+    }
     
-    if ( grep { $checkIp eq $_ } @takenList ) 
+    if ( grep { $checkIp eq $_ } @reserved )
     {
 	return 1; # false
     }
@@ -53,7 +52,6 @@ sub is_local_ip
     my $localip = shift;
 
     # Make sure that the IP is indeed local.
-    my $ndb = esmith::NetworksDB->open_ro;
     my @interfaces = $ndb->green();
     push(@interfaces, $ndb->blue());
 
