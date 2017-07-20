@@ -72,9 +72,9 @@ event_templates('nethserver-dnsmasq-save', qw(
 event_services('nethserver-dnsmasq-save',
 	       'dnsmasq' => 'restart');
 
-event_actions('nethserver-dnsmasq-save',
-              'dhcp-range-cleanup' => '02',
-);
+event_actions('nethserver-dnsmasq-save', qw(
+    nethserver-dnsmasq-adjustdb 02
+));
 
 #--------------------------------------------------
 # nethserver-hosts-save event
@@ -88,13 +88,11 @@ event_services('nethserver-hosts-save',
 #--------------------------------------------------
 # actions for interface-update event
 #--------------------------------------------------
-event_templates('interface-update',
-                '/etc/dnsmasq.conf');
-event_services('interface-update',
-	       'dnsmasq' => 'restart');
-event_actions('interface-update',
-              'dhcp-range-cleanup' => '02',
-);
+
+event_actions('interface-update', qw(
+    nethserver-dnsmasq-adjustdb 60
+    nethserver-dnsmasq-signalsave 61
+));
 
 #--------------------------------------------------
 # actions for migration-import event
@@ -103,3 +101,6 @@ event_actions('interface-update',
 $event = "migration-import";
 event_actions($event, 'nethserver-dnsmasq-migrate' => 60);
 
+validator_actions('logical-interface-create', qw(
+    dhcp-conflicts 20
+));
