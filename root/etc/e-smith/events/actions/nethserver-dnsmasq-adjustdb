@@ -1,0 +1,80 @@
+#!/usr/bin/perl
+
+#
+# Copyright (C) 2017 Nethesis S.r.l.
+# http://www.nethesis.it - nethserver@nethesis.it
+#
+# This script is part of NethServer.
+#
+# NethServer is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or any later version.
+#
+# NethServer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with NethServer.  If not, see COPYING.
+#
+
+use strict;
+use esmith::ConfigDB;
+use esmith::NetworksDB;
+use NetAddr::IP;
+
+my $ndb = esmith::NetworksDB->open_ro() || die("Couldn't open NetworksDB");
+my $cdb = esmith::ConfigDB->open('dhcp') || die("Couldn't open dhcp DB");
+
+my $event = shift;
+
+foreach ($cdb->get_all_by_prop('type' => 'range')) {
+    my $interface = $ndb->get($_->key);
+    if (!defined($interface)) {
+        my $successor = lookup_successor($_->prop('DhcpRangeStart'), $_->prop('DhcpRangeEnd'));
+        if($successor) {
+            rename_range($_, $successor);
+        } else {
+            # Delete ranges associated to non-existing interface
+            $_->delete();
+        }
+    } elsif($interface->prop('role') eq 'bridged') {
+        rename_range($_, $interface->prop('bridge'));
+    } elsif($interface->prop('role') eq 'slave') {
+        rename_range($_, $interface->prop('master'));
+    } elsif($interface->prop('role') !~ m/^(green|blue)$/) {
+        # Delete ranges associated to other roles (except green and blue):
+        $_->delete();
+    }
+}
+
+exit(0);
+
+sub lookup_successor
+{
+    my $range_begin = shift;
+    my $range_end = shift;
+
+    foreach my $interface ($ndb->green(), $ndb->blue()) {
+        my $network = NetAddr::IP->new($interface->prop('ipaddr'), $interface->prop('netmask'))->network();
+        if($network->contains(NetAddr::IP->new($range_begin)) && $network->contains(NetAddr::IP->new($range_end))) {
+            return $interface->key;
+        }
+    }
+
+    return undef;
+}
+
+sub rename_range
+{
+    my $range_record = shift;
+    my $new_key = shift;
+
+    my $old_key = $range_record->key;
+    warn "[NOTICE] Rename dhcp record: $old_key -> $new_key\n";
+    $cdb->new_record($new_key, {$range_record->props()});
+    $range_record->delete();
+}
+
