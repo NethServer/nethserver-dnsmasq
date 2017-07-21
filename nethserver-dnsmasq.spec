@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	NethServer configuration files for dnsmasq
-Version: 1.6.4
+Version: 1.6.5
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -49,6 +49,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Jul 21 2017 Davide Principi <davide.principi@nethesis.it> - 1.6.5-1
+- DHCP server breaks on new logical interface - Bug NethServer/dev#5331
+
 * Mon Mar 06 2017 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.6.4-1
 - Migration from sme8 - NethServer/dev#5196
 
