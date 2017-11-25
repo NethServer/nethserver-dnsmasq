@@ -1,0 +1,21 @@
+
+#
+# Create Domain wildcard for remote hosts
+#
+
+{
+use esmith::HostsDB;
+my $hdb = esmith::HostsDB->open_ro() || die '# hosts DB is not available';
+
+foreach $host ($hdb->get_all_by_prop('type', 'remote')) {
+    my $IpAddress = $host->prop('IpAddress');
+    my $wildcard =  $host->prop('WildcardMode') || 'disabled';
+
+    if (($wildcard eq 'disabled') || (! $IpAddress)) {
+        next;
+    }
+
+    $OUT .= "# redirect all subdomains to : ".$host->key;
+    $OUT .= "\naddress=/".$host->key."/".$IpAddress."\n\n";
+}
+}
