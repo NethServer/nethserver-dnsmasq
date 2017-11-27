@@ -7,7 +7,6 @@ Source: %{name}-%{version}.tar.gz
 BuildArch:	noarch
 URL: %{url_prefix}/%{name} 
 
-Requires:	nethserver-hosts > 1.1.0-1.ns6
 Requires:	dnsmasq
 
 Obsoletes: nethserver-tftp
