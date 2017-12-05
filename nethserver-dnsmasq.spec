@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	NethServer configuration files for dnsmasq
-Version: 1.6.5
+Version: 1.6.6
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -48,6 +48,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Dec 05 2017 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.6.6-1
+- Wildcard domain feature in dnsmasq - NethServer/dev#5390
+
 * Fri Jul 21 2017 Davide Principi <davide.principi@nethesis.it> - 1.6.5-1
 - DHCP server breaks on new logical interface - Bug NethServer/dev#5331
 
