@@ -12,11 +12,14 @@
     my $db = esmith::ConfigDB->open_ro("dhcp") || die "Can't open dhcp database: $!\n";
     my $ndb = esmith::NetworksDB->open_ro() || die "Can't open networks database: $!\n";
     my $tot_range_length = 0;
+    my $tftpstatus = $dnsmasq{'tftp-status'} || 'disabled';
     foreach ($db->get_all_by_prop("type" => "range")) {
         my $status = $_->prop('status') || 'disabled';
         if ( $status eq 'enabled') {
             my $interface = $_->key;
             my $netmask = $ndb->get($interface)->prop('netmask') || next;
+            my $ipaddr = $ndb->get($interface)->prop('ipaddr') || next;
+            my $role = $ndb->get($interface)->prop('role') || '';
             my $start = $_->prop('DhcpRangeStart') || next;
             my $end = $_->prop('DhcpRangeEnd') || next;
             my $start_ip = new NetAddr::IP($start);
@@ -70,6 +73,10 @@
             if ($tftp_server ne '') {
                foreach (split(',',$tftp_server)) {
                    $OUT .= "dhcp-option=tag:$interface,option:tftp-server,\"$_\"\n";
+               }
+            } else {
+               if ( $tftpstatus eq 'enabled' && $role eq 'green' ) {
+                   $OUT .= "dhcp-option=tag:$interface,option:tftp-server,\"$ipaddr\"\n";
                }
             }
 
