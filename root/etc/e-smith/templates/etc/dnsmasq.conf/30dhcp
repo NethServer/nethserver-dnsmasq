@@ -75,8 +75,8 @@
                    $OUT .= "dhcp-option=tag:$interface,option:tftp-server,\"$_\"\n";
                }
             } else {
-               if ( $tftpstatus eq 'enabled' && $role eq 'green' ) {
-                   $OUT .= "dhcp-option=tag:$interface,option:tftp-server,\"$ipaddr\"\n";
+               if ($tftpstatus eq 'enabled') {
+                   $OUT .= "dhcp-option=tag:$interface,option:tftp-server,$ipaddr\n";
                }
             }
 
