@@ -1,0 +1,45 @@
+#!/usr/bin/perl
+
+#
+# Copyright (C) 2017 Nethesis S.r.l.
+# http://www.nethesis.it - nethserver@nethesis.it
+#
+# This script is part of NethServer.
+#
+# NethServer is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or any later version.
+#
+# NethServer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with NethServer.  If not, see COPYING.
+#
+
+use strict;
+use esmith::ConfigDB;
+
+my $cdb = esmith::ConfigDB->open_ro('dhcp') || die("Couldn't open dhcp DB");
+
+my @parts = @ARGV;
+my $type = pop @parts;
+my $dhcp_counter = 0;
+
+foreach (@parts) {
+    if(defined $cdb->get($_)) {
+        $dhcp_counter++;
+    }
+}
+
+if($dhcp_counter > 1) {
+    # Manual configuration is required to fix
+    # conflicts
+    warn "the DHCP configuration must be fixed manually\n";
+    exit(3);
+}
+
+exit(0);
