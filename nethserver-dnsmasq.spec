@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	NethServer configuration files for dnsmasq
-Version: 1.5.6
+Version: 1.5.7
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jan 08 2019 Davide Principi <davide.principi@nethesis.it> - 1.5.7-1
+- Backport of logical interface integrity checks - Bug #3447 [NethServer 6]
+
 * Thu Feb 18 2016 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.5.6-1
 - DHCP TFTP server ignored by clients - Bug #3353 [NethServer]
 
