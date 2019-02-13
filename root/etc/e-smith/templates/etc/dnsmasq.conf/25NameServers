@@ -20,6 +20,6 @@ no-resolv
 # to  be  up.  Uncommenting this forces dnsmasq to try each query
 # with  each  server  strictly  in  the  order  they   appear   in
 # /etc/resolv.conf
-strict-order
+all-servers
 
 
