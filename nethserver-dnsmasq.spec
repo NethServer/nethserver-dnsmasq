@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	NethServer configuration files for dnsmasq
-Version: 1.6.7
+Version: 1.7.0
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -48,6 +48,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Feb 15 2019 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.7.0-1
+- Dnsmasq: remove strict-order option - NethServer/dev#5705
+
 * Wed Nov 07 2018 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.6.7-1
 - dnsmasq.conf: TFTP configuration improvement - NethServer/dev#5616
 
