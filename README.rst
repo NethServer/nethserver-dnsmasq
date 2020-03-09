@@ -95,6 +95,7 @@ Properties:
 * ``except-interface``: comma-separated list of interfaces. Do not listen to listed interfaces, useful to avoid conflicts with libvirt
 * ``tftp-status``: can be ``enabled`` or ``disabled``. If enabled, enable the TFTP server for BOOTP (port 67)
 * ``access``: default is ``private``, do NOT set to ``public``
+* ``DomainRedirection``: specify a dns server for a particular domain (comma separated). The ``domain.org:192.168.1.1`` will send all queries ``*.domain.org`` for internal machines to ``192.168.1.1``. The special server address ``#`` means, "use the standard servers", so ``sub.domain.org:#`` will send all queries for ``*sub.domain.org`` to the default DNS server of the domain name.
 
 Database example: ::
 
@@ -102,14 +103,14 @@ Database example: ::
     AllowHosts=
     CacheSize=4000
     DenyHosts=
+    DomainRedirection=domain.org:192.168.1.1,sub.domain.org:#
     TCPPort=53
     UDPPorts=53,67
     access=private
     dhcp-boot=pxelinux.0,myserver.mydomain.com,192.168.1.1
     except-interface=virbr0,tunspot
     status=enabled
-    tftp-status=enabled
-
+    tftp-status
 
 DHCP
 ====
@@ -267,18 +268,3 @@ Copy inside the directory :file:`vmlinuz` and :file:`initrd.img` files. These fi
 Change files owner to nobody: ::
 
  chown -R nobody /var/lib/tftpboot/*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
