@@ -110,6 +110,6 @@ validator_actions('logical-interface-create', qw(
 # actions for post-restore-config event
 #--------------------------------------------------
 
-$event = "post-restore-config"
+$event = "post-restore-config";
 
 event_actions($event, 'nethserver-dnsmasq-network-reset' => '03');
