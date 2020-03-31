@@ -104,3 +104,12 @@ event_actions($event, 'nethserver-dnsmasq-migrate' => 60);
 validator_actions('logical-interface-create', qw(
     dhcp-conflicts 20
 ));
+
+
+#--------------------------------------------------
+# actions for post-restore-config event
+#--------------------------------------------------
+
+$event = "post-restore-config";
+
+event_actions($event, 'nethserver-dnsmasq-network-reset' => '03');
