@@ -29,7 +29,6 @@ my $ndb = esmith::NetworksDB->open();
 my $cdb = esmith::ConfigDB->open('dhcp');
 
 if (grep(/^--skip-network$/, @ARGV)) {
-
     # Delete all DHCP ranges related to non existing interfaces
     foreach my $item ($cdb->get_all()) {
         if(!defined($ndb->get($item->key))) {
