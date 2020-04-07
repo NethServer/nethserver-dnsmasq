@@ -1,6 +1,6 @@
 Name:		nethserver-dnsmasq
 Summary:	NethServer configuration files for dnsmasq
-Version: 1.7.1
+Version: 1.7.2
 Release: 1%{?dist}
 License:	GPL
 Source: %{name}-%{version}.tar.gz
@@ -48,6 +48,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Apr 07 2020 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.7.2-1
+- Restore configuration without network override - NethServer/dev#6099
+
 * Tue Mar 10 2020 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.7.1-1
 - Dnsmasq: Forward DNS queries to a particular DNS server  - NethServer/dev#6082
 
