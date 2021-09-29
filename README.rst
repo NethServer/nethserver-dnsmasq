@@ -171,12 +171,12 @@ TFTP server
 
 TFTP module contains configuration fragments that enables dnsmasq built-in TFTP server.
 
-TFTP server han no authentication or encription support. 
+TFTP server has no authentication or encryption support. 
 
 When installed tftp is disabled by default and need to be enabled with: ::
 
- config setprop tftp status enabled
- signal-event nethserver-tftp-save
+ config setprop dnsmasq tftp-status enabled
+ signal-event nethserver-dnsmasq-save
 
 The package also add directory :file:`/var/lib/tftpboot` that is the root of tftp server.
 
@@ -204,11 +204,10 @@ Test TFTP
 
 Testing is very simple:
 
-Install package and enable TFTP server: ::
+Enable TFTP server: ::
 
- yum install nethserver-tftp
- config setprop tftp status enabled
- signal-event nethserver-tftp-save
+ config setprop dnsmasq tftp-status enabled
+ signal-event nethserver-dnsmasq-save
 
 Create a file to share, owned by ``nobody`` user: ::
 
